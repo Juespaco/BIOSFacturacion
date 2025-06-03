@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire" Version="1.8.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\GrupoBIOS.Application.DTOs\GrupoBIOS.Application.DTOs.csproj" />
+    <ProjectReference Include="..\..\Application\GrupoBIOS.Application.Interface\GrupoBIOS.Application.Interface.csproj" />
+    <ProjectReference Include="..\..\Application\GrupoBIOS.Application.Main\GrupoBIOS.Application.Main.csproj" />
+    <ProjectReference Include="..\..\Domain\GrupoBIOS.Domain.Core\GrupoBIOS.Domain.Core.csproj" />
+    <ProjectReference Include="..\..\Domain\GrupoBIOS.Domain.Entity\GrupoBIOS.Domain.Entity.csproj" />
+    <ProjectReference Include="..\..\Domain\GrupoBIOS.Domain.Interface\GrupoBIOS.Domain.Interface.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\GrupoBIOS.InfraStructure.Data\GrupoBIOS.InfraStructure.Data.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\GrupoBIOS.InfraStructure.Interface\GrupoBIOS.InfraStructure.Interface.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\GrupoBIOS.InfraStructure.Repository\GrupoBIOS.InfraStructure.Repository.csproj" />
+    <ProjectReference Include="..\..\Transversal\GrupoBIOS.Transversal.Common\GrupoBIOS.Transversal.Common.csproj" />
+    <ProjectReference Include="..\..\Transversal\GrupoBIOS.Transversal.Logging\GrupoBIOS.Transversal.Logging.csproj" />
+    <ProjectReference Include="..\..\Transversal\GrupoBIOS.Transversal.Mapper\GrupoBIOS.Transversal.Mapper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ScriptsSQL\" />
+  </ItemGroup>
+
+</Project>

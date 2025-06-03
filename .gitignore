@@ -1,0 +1,86 @@
+# .NET y Blazor
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.ionide/
+*.user
+*.suo
+*.userprefs
+*.njsproj
+*.swp
+*.sln.iml
+
+# Dependencias
+**/node_modules/
+**/jspm_packages/
+**/.npm/
+**/.yarn/
+**/bower_components/
+
+# Paquetes NuGet
+**/packages/
+**/.nuget/
+*.nupkg
+nuget.exe
+
+# Build y publicación
+**/publish/
+**/wwwroot/dist/
+**/out/
+**/Release/
+**/Debug/
+
+# Configuración local
+appsettings.Development.json
+appsettings.Local.json
+**/secrets.json
+**/local.settings.json
+
+# Azure y cloud
+**/.azure/
+**/ConnectionStrings.json
+**/PublishProfiles/
+
+# IDE específico (Rider, VS Code, etc.)
+.idea/
+**/.DS_Store
+**/*.ide/
+
+# Logs y temporales
+*.log
+*.tmp
+*.temp
+**/logs/
+
+# Blazor WebAssembly (WASM) y caché
+**/wwwroot/_framework/
+**/wwwroot/_bin/
+**/service-worker-assets.js
+
+# Archivos de pruebas (opcional)
+**/TestResults/
+*.coverage
+*.coveragexml
+
+# Archivos de SQL y bases de datos locales
+*.mdf
+*.ldf
+*.sdf
+*.sqlite
+*.dbmdl
+*.jfm
+
+
+# Docker (si aplica)
+**/.dockerignore
+**/Dockerfile.local
+**/docker-compose.override.yml
+
+# Misceláneos
+**/.sonarlint/
+**/.localhistory/
+**/*.backup
+
+# Backup files
+*.bak

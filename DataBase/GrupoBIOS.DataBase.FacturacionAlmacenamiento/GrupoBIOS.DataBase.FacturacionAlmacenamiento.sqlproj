@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>GrupoBIOS.DataBase.FacturacionAlmacenamiento</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{652d8d6c-1940-4cd0-96e1-98a24202532b}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>GrupoBIOS.DataBase.FacturacionAlmacenamiento</RootNamespace>
+    <AssemblyName>GrupoBIOS.DataBase.FacturacionAlmacenamiento</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Table" />
+    <Folder Include="StoredProcedure" />
+    <Folder Include="View" />
+    <Folder Include="Index" />
+    <Folder Include="Function" />
+    <Folder Include="Job" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Table\Compania.sql" />
+    <Build Include="Table\Role.sql" />
+    <Build Include="Table\CentroOperativo.sql" />
+    <Build Include="Table\Clase.sql" />
+    <Build Include="Table\Parametro.sql" />
+    <Build Include="Table\Modulo.sql" />
+    <Build Include="Table\RoleporModulo.sql" />
+    <Build Include="Table\Usuario.sql" />
+    <Build Include="Table\InfoPersonal.sql" />
+    <Build Include="StoredProcedure\uspCrearUsuario.sql" />
+    <Build Include="StoredProcedure\uspGetUsuarioAll.sql" />
+    <Build Include="StoredProcedure\uspGetUsuarioporLogin.sql" />
+    <Build Include="StoredProcedure\uspGetParametroAll.sql" />
+    <Build Include="StoredProcedure\uspGetParametroporClase.sql" />
+    <Build Include="StoredProcedure\uspGetParametroporId.sql" />
+    <Build Include="StoredProcedure\uspActualizarParametro.sql" />
+    <Build Include="StoredProcedure\uspDelParametro.sql" />
+    <Build Include="StoredProcedure\uspDelClase.sql" />
+    <Build Include="StoredProcedure\uspActualizarClase.sql" />
+    <Build Include="StoredProcedure\uspGetClaseporId.sql" />
+    <Build Include="StoredProcedure\uspCrearClase.sql" />
+    <Build Include="StoredProcedure\uspCrearParametro.sql" />
+    <Build Include="StoredProcedure\uspGetUsuarioporId.sql" />
+    <Build Include="StoredProcedure\uspActualizarUsuario.sql" />
+    <Build Include="StoredProcedure\sp_Compania_Insertar.sql" />
+    <Build Include="StoredProcedure\sp_Compania_Actualizar.sql" />
+    <Build Include="StoredProcedure\sp_Compania_CambiarEstado.sql" />
+    <Build Include="StoredProcedure\sp_Compania_ObtenerPorId.sql" />
+    <Build Include="StoredProcedure\sp_Compania_ObtenerTodos.sql" />
+  </ItemGroup>
+</Project>

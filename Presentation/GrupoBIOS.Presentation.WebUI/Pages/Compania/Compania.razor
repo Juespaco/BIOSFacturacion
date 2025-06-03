@@ -1,0 +1,507 @@
+﻿@page "/compania"
+
+@using System.ComponentModel.DataAnnotations
+
+@inject ICompanyService compService
+@inject IDialogService DialogService
+@inject NavigationManager navigationManager
+@inject SweetAlertService SweetAlert
+@inject LoadingDialogService LoadingService
+@inject SnackBarService snackBarService
+@inject ShowDialogService showDialog
+@inject ShowDialogService dialogService
+@inject ISiesaService siesaService
+@inject HttpClient httpClient
+@inject IAuthService AuthService
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-6">
+    <MudPaper Elevation="10" Class="pa-4 rounded-lg">
+        <!-- Título y Botón de Agregar -->
+        <div class="d-flex justify-space-between align-center mb-4">
+            <MudText Typo="Typo.h4" Color="Color.Primary">Gestión de Compañías</MudText>
+        </div>
+        <MudGrid>
+            <MudItem xs="12" md="12">
+                <MudText Typo="Typo.h6" Class="mb-4">Información de Compañía</MudText>
+                <MudSelect T="int"
+                           Value="IDSiesa"
+                           Label="Seleccione la compañía"
+                           Variant="Variant.Outlined"
+                           Immediate="true"
+                           ValidateOnBlur="true"
+                           Required="true"
+                           Error="@(IDSiesa == 0)"
+                           ErrorText="Debe seleccionar la compañía"
+                           ValueChanged="@(async (value) => {
+                            IDSiesa = value;
+                            await LoadComapnyByID(value);
+                })">
+                    <MudSelectItem T="int"
+                                   Value="0">Seleccione una opción</MudSelectItem>
+                    @foreach (var item in companias)
+                    {
+                        <MudSelectItem T="int" Value="@item.f_cia">@item.f_razon_social</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+
+        @if (IDSiesa != 0)
+        {
+            <MudCard Class="ma-4">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h5" Class="ml-2">@(Model?.IDCompania == 0 ? "Nueva Compañía" : "Editar Compañía")</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudForm Model="@Model" @ref="@_form" @onsubmit="HandleSubmit">
+                        <MudGrid>
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.IDCompania"
+                                              Label="ID Compania *"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.IDCompania)"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true"
+                                              Disabled="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.IDSiesa"
+                                              Label="ID Siesa *"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.IDSiesa)"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true"
+                                              InputType="InputType.Number"
+                                              Disabled="true" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.NombreCompania"
+                                              Label="Nombre Compañía *"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.NombreCompania)"
+                                              Required="true"
+                                              ValidateOnBlur="true"
+                                              Immediate="false" />
+                            </MudItem>
+
+
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.NombreBD"
+                                              Label="Nombre Base de Datos *"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.NombreBD)"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+
+                            <!-- Fila 3 - Nombre Conexión BD y URL Web Service -->
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.NombreConexionBD"
+                                              Label="Nombre Conexión BD"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.NombreConexionBD)"
+                                              Required="true"
+                                              ValidateOnBlur="true"
+                                              Immediate="false" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.UrlWebServiceSiesa"
+                                              Label="URL Web Service Siesa"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.UrlWebServiceSiesa)"
+                                              Required="true"
+                                              ValidateOnBlur="true"
+                                              Immediate="false" />
+                            </MudItem>
+
+                            <!-- Fila 4 - Usuario y Clave Web Service -->
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.UsuarioWebService"
+                                              Label="Usuario Web Service"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.UsuarioWebService)"
+                                              Required="true"
+                                              ValidateOnBlur="true"
+                                              Immediate="false" />
+                            </MudItem>
+                            <MudItem xs="12" sm="6">
+                                <MudTextField @bind-Value="@Model.ClaveWebService"
+                                              Label="Clave Web Service"
+                                              Variant="Variant.Outlined"
+                                              For="@(() => Model.ClaveWebService)"
+                                              InputType="InputType.Password"
+                                              Required="true"
+                                              ValidateOnBlur="true"
+                                              Immediate="false" />
+                            </MudItem>
+
+                            <!-- Botones -->
+                            <!-- Botones -->
+                            <MudItem xs="12" class="d-flex justify-end mt-4">
+                                <MudButton Variant="Variant.Text"
+                                           Color="Color.Default"
+                                           Class="mr-2"
+                                           OnClick="ResetForm">
+                                    Cancelar
+                                </MudButton>
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           ButtonType="ButtonType.Submit"
+                                           Disabled="@(!IsFormValid())"
+                                           OnClick="HandleRegister">
+                                    @(Model?.IDCompania == 0 ? "Guardar" : "Actualizar")
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudForm>
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+
+    private bool _isFormValid;
+    private bool _shouldValidate = false;
+    private bool _visible;
+    private bool showValidation = false;
+    private string? NombreUsuario { get; set; }
+
+    private MudForm _form;
+    //CompaniaDTO? Model = null;
+    private CompaniaDTO Model { get; set; } = new CompaniaDTO();
+    private bool isSaving = false;
+    private bool _formIsValid = false;
+
+
+    string? errorMessage;
+    bool isLoading = true;
+
+    private string _searchString = string.Empty;
+    private bool _sortNameByLength;
+    private List<string> _events = new();
+
+    private IEnumerable<CompaniaSiesaResponseDTO> companias = new List<CompaniaSiesaResponseDTO>();
+    private RegisterCompaniaPage? _registerComponent;
+    private int IDSiesa = 0;
+
+    //IEnumerable<CompaniaDTO>? companias = [];
+
+    private readonly DialogOptions _dialogOptions = new()
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large,
+            Position = DialogPosition.Center,
+            CloseButton = true
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model.IDCompania = 0;        
+        NombreUsuario = await AuthService.GetUserNameAsync();
+        LoadingService.Show();
+        await GetCompanias();
+        IsFormValid();
+        LoadingService.Hide();
+    }
+
+    private async Task OnFieldChanged()
+    {
+        if (_form != null)
+        {
+            await _form.Validate();
+            StateHasChanged(); // Actualiza la UI para reflejar el estado del botón
+        }
+    }
+
+    private void OpenDialog()
+    {
+        _visible = true;
+        Model = null;
+    }
+
+    private async Task EditCompania(int IDCompania)
+    {
+        LoadingService.Show();
+        await LoadComapnyByID(IDCompania);
+        _visible = true;
+        LoadingService.Hide();
+    }
+
+    private async Task DeactivateCompania(int IDUsuario)
+    {
+        bool? result = await dialogService.ShowDangerConfirmationAsync(
+            title: "Confirmar desactivar",
+            message: "¿Está seguro que desea desactivar este registro?",
+            confirmText: "Sí, Desactivar",
+            cancelText: "Cancelar");
+
+        if (result == true)
+        {
+
+            //
+            LoadingService.Show();
+            var resp = await DesactivarCompania(IDUsuario);
+            LoadingService.Hide();
+            if (resp)
+            {
+                LoadingService.Show();
+                await LoadCompanias();
+                LoadingService.Hide();
+                snackBarService.ShowSnackBar("El usuario se ha desactivado correctamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+            }
+            else
+            {
+                snackBarService.ShowSnackBar("El usuario no se ha podido desactivar, ha ocurrido un error inesperado", Severity.Error, Defaults.Classes.Position.TopEnd);
+            }
+
+        }
+    }
+
+    // Método para verificar si el formulario es válido
+    private bool IsFormValid()
+    {
+        // Verifica si el formulario MudBlazor es válido
+        // if (_form != null && !_form.IsValid)
+        //     return false;
+
+        // Verifica que todos los campos requeridos tengan valores
+        return !string.IsNullOrWhiteSpace(Model.NombreCompania) &&
+               Model.IDSiesa.HasValue && Model.IDSiesa > 0 &&
+               !string.IsNullOrWhiteSpace(Model.NombreBD) &&
+               !string.IsNullOrWhiteSpace(Model.NombreConexionBD) &&
+               !string.IsNullOrWhiteSpace(Model.UrlWebServiceSiesa) &&
+               !string.IsNullOrWhiteSpace(Model.UsuarioWebService) &&
+               !string.IsNullOrWhiteSpace(Model.ClaveWebService);
+    }
+
+    private async Task LoadComapnyByID(int IDSiesa)
+    {
+        try
+        {
+            var resp = await compService.GetCompaniaId(IDSiesa);
+
+            if (resp?.Data != null)
+            {
+                Model = resp.Data;                
+                await Task.Delay(100); // Pequeño delay para asegurar renderizado
+                StateHasChanged();
+            }
+            else
+            {
+                Model = new CompaniaDTO { IDSiesa = IDSiesa, IDCompania = 0 };                
+                await Task.Delay(100); // Pequeño delay para asegurar renderizado
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            await SweetAlert.ShowErrorAsync("Error", ex.Message);
+        }
+    }
+
+    private async Task<bool> DesactivarCompania(int IDCompania)
+    {
+        isLoading = true;
+        bool resp = false;
+        try
+        {
+            var respData = await compService.DesactivarCompania(IDCompania);
+            resp = respData.Data;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar compañías: {ex.Message}";
+            return false;
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+
+        return resp;
+    }
+
+    async Task GetCompanias()
+    {
+        var resp = await siesaService.GetListCompaniaAsync();
+        if (resp.IsSuccess)
+        {
+            companias = resp.Data!;            
+        }
+        else
+        {
+            snackBarService.ShowSnackBar("Ha ocurrido un error inesperado.", Severity.Error, Defaults.Classes.Position.TopEnd);
+        }
+    }
+
+    private async Task LoadCompanias()
+    {
+        isLoading = true;
+
+        try
+        {
+            var resp = await compService.GetListCompanias();
+            //companias = resp.Data;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar usuarios: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void HandleValidityChange(bool isValid)
+    {
+        _isFormValid = isValid;
+        StateHasChanged(); // Esto fuerza la actualización de la UI
+    }
+
+    private void CloseDialog()
+    {
+        _visible = false;
+    }
+
+    private Func<CompaniaDTO, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.IDSiesa.ToString()!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.NombreBD!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.NombreCompania!.Contains(_searchString))
+            return true;
+
+        if (x.UrlWebServiceSiesa!.ToString()!.Contains(_searchString))
+            return true;
+        return false;
+    };
+
+    void SelectedItemsChanged(HashSet<CompaniaDTO> items)
+    {
+        _events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
+    }
+
+    private async Task HandleSubmit()
+    {
+        await _form.Validate();
+
+        if (_form.IsValid && IsFormValid())
+        {
+            isSaving = true;
+            try
+            {
+                // Aquí iría la lógica para guardar
+                //await servicio.SaveCompaniaAsync(Model);
+                //Snackbar.Add("Compañía guardada con éxito", Severity.Success);
+                snackBarService.ShowSnackBar("El registro se ha guardado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+                //Navigation.NavigateTo("/companias"); // Ajusta la ruta según tu aplicación
+            }
+            catch (Exception ex)
+            {
+                //Snackbar.Add($"Error al guardar: {ex.Message}", Severity.Error);
+                snackBarService.ShowSnackBar($"Ha ocurrido un error inesperado. {ex.Message}", Severity.Error, Defaults.Classes.Position.TopEnd);
+            }
+        }
+    }
+
+    // Método para resetear el formulario
+    private async Task ResetForm()
+    {
+        // Método correcto para resetear MudForm
+        await _form.ResetAsync();
+
+        // Reiniciar el modelo
+        Model = new CompaniaDTO();
+        IDSiesa = 0;
+
+        // Forzar actualización de la UI
+        StateHasChanged();
+    }
+
+    private void Cancelar()
+    {
+        //Navigation.NavigateTo("/companias"); // Ajusta la ruta según tu aplicación
+    }
+
+    async Task<string> HandleRegister()
+    {
+        showValidation = true;
+        string response = string.Empty;
+
+        if (Model.IDCompania == 0)
+        {
+            response = await HandleInsert();
+
+            if (response == "OK")
+            {
+                CloseDialog();
+                snackBarService.ShowSnackBar("El registro se ha guardado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+                showValidation = false;
+            }
+            else
+            {
+                showValidation = false;
+                snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
+            }
+        }
+        else
+        {
+            response = await HandleUpdate();
+            if (response == "OK")
+            {
+                CloseDialog();
+                snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+                showValidation = false;
+            }
+            else
+            {
+                showValidation = false;
+                snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
+            }
+        }
+
+        return response;
+    }
+
+    public async Task<string> HandleInsert()
+    {
+        LoadingService.Show();
+
+        showValidation = true;
+        Model.IDSiesa = IDSiesa;
+        var result = await compService.Register(Model);
+        LoadingService.Hide();
+
+        return result;
+    }
+
+    public async Task<string> HandleUpdate()
+    {
+        LoadingService.Show();
+
+        showValidation = true;
+
+        Model.CreadoPor = NombreUsuario!;
+        Model.Estado = true;
+        Model.IDSiesa = IDSiesa;
+
+        var result = await compService.UpdateCompaniaAsync(Model);
+        LoadingService.Hide();
+
+        return result!;
+    }
+}

@@ -1,0 +1,377 @@
+﻿@page "/usuarios"
+@inject IDialogService DialogService
+@inject IAuthService authService
+@inject NavigationManager navigationManager
+@inject SweetAlertService SweetAlert
+@inject LoadingDialogService LoadingService
+@inject SnackBarService snackBarService
+@inject ShowDialogService showDialog
+@inject ShowDialogService dialogService
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-6">
+    <MudPaper Elevation="10" Class="pa-4 rounded-lg">
+        <!-- Título y Botón de Agregar -->
+        <div class="d-flex justify-space-between align-center mb-4">
+            <MudText Typo="Typo.h4" Color="Color.Primary">Gestión de Usuarios</MudText>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="OpenDialog">
+                Nuevo Usuario
+            </MudButton>
+        </div>
+
+        <!-- Grid de Usuarios -->
+        <MudDataGrid T="UsuarioDTO"
+                     Style="width: 95%; margin: 0 auto;"
+                     MultiSelection="true"
+                     Items="@usuarios"
+                     SortMode="SortMode.Multiple"
+                     Filterable="true"
+                     Loading="@isLoading"
+                     QuickFilter="@_quickFilter"
+                     Hideable="true"
+                     SelectedItemsChanged="@SelectedItemsChanged"
+                     RowStyleFunc="@((item, rowIndex) => item.Estado ? "" : "background-color: var(--mud-palette-action-disabled-background)")">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Lista de usuarios</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <Columns>
+                <PropertyColumn Property="x => x.IDUsuario" Title="ID" Sortable="false" Filterable="false" />
+                <PropertyColumn Property="x => x.NombredeUsuario" Title="Usuario" />
+                <PropertyColumn Property="x => x.NombreRol" Title="Rol" />
+                <PropertyColumn Property="x => x.FechaExpiracionRol" Title="Fecha Expiración Rol">
+                    <CellTemplate>
+                        @context.Item.FechaExpiracionRol?.ToString("dd/MM/yyyy")
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.Estado" Title="Estado">
+                    <CellTemplate>
+                        <MudText Color="@(context.Item.Estado ? Color.Success : Color.Error)">
+                            @(context.Item.Estado ? "Activo" : "Inactivo")
+                        </MudText>
+                    </CellTemplate>
+                </PropertyColumn>
+                <!-- Columna de acciones -->
+                <TemplateColumn Title="Acciones" Sortable="false" Filterable="false">
+                    <CellTemplate>
+                        <MudButtonGroup Variant="Variant.Text" Size="Size.Small">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Color="Color.Primary"
+                                           Title="Editar"
+                                           OnClick="@(() => EditUser(context.Item.IDUsuario))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Color="Color.Error"
+                                           Disabled="@(!context.Item.Estado)"
+                                           Title="Eliminar"
+                                           OnClick="@(() => DeactivateUser(context.Item.IDUsuario))" />
+                        </MudButtonGroup>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="UsuarioDTO" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudPaper>
+</MudContainer>
+
+<MudDialog @bind-Visible="_visible" Options="_dialogOptions">
+    <DialogContent>
+        <Register @ref="_registerComponent" OnValidityChanged="HandleValidityChange" UserData="@user" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CloseDialog" Class="px-10">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   OnClick="HandleRegister">
+            Guardar
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    //List<UsuarioDTO>? usuarios;
+
+    IEnumerable<UsuarioDTO>? usuarios = [];
+    UsuarioDTO? user = null;
+    private List<RoleDTO> roles = new();
+    //private bool loading = true;
+    private string searchString = "";
+    private UsuarioDTO selectedUser = new UsuarioDTO();
+
+    private UsuarioDTO registerModel = new UsuarioDTO();
+    private List<CompaniaDTO> companias = new List<CompaniaDTO>();
+    private List<CentroOperativoDTO> centroOperativo = new List<CentroOperativoDTO>();
+
+    private bool showValidation = false;
+    private bool showPassword = false;
+    private bool isFormValid = false;
+
+    private Register? _registerComponent;
+    private bool _isFormValid;
+    private bool _visible;
+
+    string? errorMessage;
+    bool isLoading = true;
+
+    private bool visible;
+    private int rating;
+
+    //private void OpenDialog() => visible = true;
+
+    private string _searchString;
+    private bool _sortNameByLength;
+    private List<string> _events = new();
+
+    private readonly DialogOptions _dialogOptions = new()
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large,
+            Position = DialogPosition.Center,
+            CloseButton = true
+        };
+
+    private void OpenDialog()
+    {
+        _visible = true;
+        user = null;
+    }
+
+    private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<Register>("Crear usuario", options);
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    private void HandleValidityChange(bool isValid)
+    {
+        _isFormValid = isValid;
+        StateHasChanged(); // Esto fuerza la actualización de la UI
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoadingService.Show();
+        await LoadUsers();
+        await LoadRoles();
+        await getCompania();
+        await getCentroOperativo();
+        LoadingService.Hide();
+
+        //var response = await Http.GetFromJsonAsync<List<UsuarioDTO>>("/api/Usuario/GetAllAsync");
+    }
+
+    private async Task LoadUsers()
+    {
+        isLoading = true;
+
+        try
+        {
+            var resp = await authService.GetListUsers();
+            usuarios = resp.Data;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar usuarios: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<bool> DesactivarUsuario(int IDUsuario)
+    {
+        isLoading = true;
+        bool resp = false;
+        try
+        {
+            var respData = await authService.DesactivarUsuario(IDUsuario);
+            resp = respData.Data;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar usuarios: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+
+        return resp;
+    }
+
+    private async Task LoadUsersByID(int IDUsuario)
+    {
+        isLoading = true;
+        user = new UsuarioDTO();
+        try
+        {
+            var resp = await authService.GetUserId(IDUsuario);
+            user = resp.Data;
+
+            if (_registerComponent != null)
+            {
+                _registerComponent.UserData = user;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar usuarios: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadRoles()
+    {
+        //roles = await UserService.GetRolesAsync();
+        roles = new List<RoleDTO>
+        {
+            new() { IDRol = 1, Descripcion = "Administrador" },
+            new() { IDRol = 2, Descripcion = "Empleado" }
+        };
+    }
+
+    private string GetRolName(int idRol)
+    {
+        return roles.FirstOrDefault(r => r.IDRol == idRol)?.Descripcion ?? "N/A";
+    }
+
+    private async Task EditUser(int IDUsuario)
+    {
+        LoadingService.Show();
+        await LoadUsersByID(IDUsuario);
+        _visible = true;
+        //OpenDialog();
+        LoadingService.Hide();
+    }
+
+    private async Task<List<CompaniaDTO>> getCompania()
+    {
+        return companias = new List<CompaniaDTO>
+        {
+            new() { IDCompania = 1, NombreCompania = "SIESA del Norte" },
+            new() { IDCompania = 2, NombreCompania = "CAPUTAN" }
+        };
+    }
+
+    private async Task<List<CentroOperativoDTO>> getCentroOperativo()
+    {
+        return centroOperativo = new List<CentroOperativoDTO>
+        {
+            new() { IDCentroOperativo = 1, NombreCO = "Centro CA0175" },
+            new() { IDCentroOperativo = 2, NombreCO = "CO 7596300" }
+        };
+    }
+
+    async Task HandleRegister()
+    {
+        showValidation = true;
+
+        if (_registerComponent?.CanSubmit() ?? false)
+        {
+            var resp = await _registerComponent.HandleRegister(); // Ejecuta el submit de Register
+            //await HandleRegisterSubmit();      // Ejecuta tu lógica personalizada
+            if (resp == "OK")
+            {
+                CloseDialog();
+                LoadingService.Show();
+                await LoadUsers();
+                LoadingService.Hide();
+
+                snackBarService.ShowSnackBar("El registro se ha guardado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+                showValidation = false;
+            }
+            else
+            {
+                showValidation = false;
+                snackBarService.ShowSnackBar("Ha ocurrido un error inesperado.", Severity.Error, Defaults.Classes.Position.TopEnd);
+            }
+        }
+        else
+        {
+            snackBarService.ShowSnackBar("Todos los campos son requeridos.", Severity.Warning, Defaults.Classes.Position.TopEnd);
+        }
+    }
+
+    private void CloseDialog()
+    {
+        _visible = false;
+    }
+
+
+    void LlamarSnackbar()
+    {
+        snackBarService.ShowSnackBar("El registro se ha guardado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+    }
+
+    private async Task DeactivateUser(int IDUsuario)
+    {        
+        bool? result = await dialogService.ShowDangerConfirmationAsync(
+            title: "Confirmar desactivar",
+            message: "¿Está seguro que desea desactivar este registro?",
+            confirmText: "Sí, Desactivar",
+            cancelText: "Cancelar");
+
+        if (result == true)
+        {
+
+            //
+            LoadingService.Show();
+            var resp = await DesactivarUsuario(IDUsuario);
+            LoadingService.Hide();
+            if (resp)
+            {
+                LoadingService.Show();
+                await LoadUsers();
+                LoadingService.Hide();
+                snackBarService.ShowSnackBar("El usuario se ha desactivado correctamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+            }
+            else
+            {
+                snackBarService.ShowSnackBar("El usuario no se ha podido desactivar, ha ocurrido un error inesperado", Severity.Error, Defaults.Classes.Position.TopEnd);
+            }
+
+        }
+    }
+
+    private Func<UsuarioDTO, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.IDUsuario.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.NombredeUsuario.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.NombreRol!.Contains(_searchString))
+            return true;
+
+        if (x.FechaExpiracionRol.ToString()!.Contains(_searchString))
+            return true;
+        return false;
+    };
+
+    void SelectedItemsChanged(HashSet<UsuarioDTO> items)
+    {
+        _events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
+    }
+
+}

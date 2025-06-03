@@ -1,0 +1,6 @@
+@GrupoBIOS.Services.API_HostAddress = http://localhost:5124
+
+GET {{GrupoBIOS.Services.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

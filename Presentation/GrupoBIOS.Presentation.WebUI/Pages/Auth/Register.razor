@@ -1,0 +1,564 @@
+﻿@page "/register"
+@attribute [AllowAnonymous]
+@inject IAuthService AuthService
+@inject NavigationManager navigationManager
+@inject SweetAlertService SweetAlert
+@inject LoadingDialogService LoadingService
+@inject Cifrador cifrador
+@* @inject IConfiguration _config *@
+
+@using Microsoft.AspNetCore.Components.Forms
+
+@* <MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider /> *@
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="py-16">
+    <EditForm Model="@registerModel" OnValidSubmit="HandleRegister">
+        @*
+        <ValidationSummary /> *@
+        <DataAnnotationsValidator />
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudTabPanel Text="Información del Usuario">
+                <MudGrid>
+                    <!-- Columna Izquierda (Información Principal) -->
+                    <MudItem xs="12" md="12">
+                        <MudPaper Class="pa-4" Elevation="3">
+                            <MudText Typo="Typo.h6" Class="mb-4">Información de Cuenta</MudText>
+                            <!-- Rol -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudSelect T="int"
+                                           @bind-Value="registerModel.IDRol"
+                                           Label="Rol"
+                                           Variant="Variant.Outlined"
+                                           Immediate="true"
+                                           ValidateOnBlur="true"
+                                           Required="true"
+                                           Error="@(registerModel.IDRol == 0)"
+                                           ErrorText="Debe seleccionar un rol">
+                                    <MudSelectItem T="int" Value="0">Seleccione una opción</MudSelectItem>
+                                    @foreach (var item in roles)
+                                    {
+                                        <MudSelectItem T="int" Value="@item.IDRol">@item.Descripcion</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <!-- Compañía -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudSelect T="int"
+                                           @bind-Value="registerModel.IDCompania"
+                                           Label="Compañía"
+                                           Variant="Variant.Outlined"
+                                           Immediate="true"
+                                           ValidateOnBlur="true"
+                                           Required="true"
+                                           Error="@(registerModel.IDCompania == 0)"
+                                           ErrorText="Debe seleccionar un rol">
+                                    <MudSelectItem T="int" Value="0">Seleccione una opción</MudSelectItem>
+                                    @foreach (var item in companias)
+                                    {
+                                        <MudSelectItem T="int" Value="@item.IDCompania">@item.NombreCompania</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <!-- Centro Operativo -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudSelect T="int"
+                                           @bind-Value="registerModel.IDCentroOperativo"
+                                           Label="Centro Operativo"
+                                           Variant="Variant.Outlined"
+                                           Immediate="true"
+                                           ValidateOnBlur="true"
+                                           Required="true"
+                                           Error="@(registerModel.IDCentroOperativo == 0)"
+                                           ErrorText="Debe seleccionar un rol">
+                                    <MudSelectItem T="int" Value="0">Seleccione una opción</MudSelectItem>
+                                    @foreach (var item in centroOperativo)
+                                    {
+                                        <MudSelectItem T="int" Value="@item.IDCentroOperativo">@item.NombreCO</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <!-- Fecha Expiración -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudDatePicker Date="@registerModel.FechaExpiracionRol"
+                                               DateChanged="@((DateTime? newDate) => registerModel.FechaExpiracionRol = newDate)"
+                                               Label="Fecha Expiración"
+                                               Variant="Variant.Outlined"
+                                               DateFormat="dd/MM/yyyy"
+                                               ValidateOnBlur="true"
+                                               Required="true"
+                                               RequiredError="La fecha de expiración del rol es requerida" />
+                            </MudItem>
+                            <!-- Nombre de Usuario -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel.NombredeUsuario"
+                                              Label="Nombre de Usuario"
+                                              Variant="Variant.Outlined"
+                                              InputType="InputType.Text"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+                            <!-- Contraseña -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel.Contrasena"
+                                              Label="Contraseña"
+                                              Variant="Variant.Outlined"
+                                              InputType="InputType.Password"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+                            <!-- Repetir Contraseña -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel.ConfirmarContrasena"
+                                              Label="Repetir Contraseña"
+                                              Variant="Variant.Outlined"
+                                              Immediate="true"
+                                              InputType="InputType.Password"
+                                              Required="true"
+                                              RequiredError="Debe confirmar la contraseña" />
+                            </MudItem>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudTabPanel>
+            <MudTabPanel Text="Información Personal">
+                <MudGrid>
+                    <!-- Columna Derecha (Información Personal) -->
+                    <MudItem xs="12" md="12">
+                        <MudPaper Class="pa-4" Elevation="3">
+                            <MudText Typo="Typo.h6" Class="mb-4">Información Personal</MudText>
+
+                            <!-- Tipo Documento -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudSelect T="int"
+                                           @bind-Value="registerModel!.InfoPersonal!.IDParametroTipoDocumento"
+                                           Label="Tipo de Documento"
+                                           Variant="Variant.Outlined"
+                                           Immediate="true"
+                                           ValidateOnBlur="true"
+                                           Required="true"
+                                           Error="@(registerModel!.InfoPersonal!.IDParametroTipoDocumento == 0)"
+                                           ErrorText="Debe seleccionar un tipo de documento">
+                                    <MudSelectItem T="int" Value="0">Seleccione una opción</MudSelectItem>
+                                    @foreach (var item in tiposDocumento)
+                                    {
+                                        <MudSelectItem T="int" Value="@item.IDParametro">@item.Nombre</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+
+                            <!-- Documento -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel!.InfoPersonal!.Documento"
+                                              Label="Documento"
+                                              Variant="Variant.Outlined"
+                                              InputType="InputType.Text"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+
+                            <!-- Nombres -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel!.InfoPersonal!.Nombres"
+                                              Label="Nombres"
+                                              Variant="Variant.Outlined"
+                                              InputType="InputType.Text"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+
+                            <!-- Apellidos -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel!.InfoPersonal!.Apellidos"
+                                              Label="Apellidos"
+                                              Variant="Variant.Outlined"
+                                              InputType="InputType.Text"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+                            <!-- Género -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudSelect T="int"
+                                           @bind-Value="registerModel!.InfoPersonal!.IDParametroGenero"
+                                           Label="Género"
+                                           Variant="Variant.Outlined"
+                                           Immediate="true"
+                                           ValidateOnBlur="true"
+                                           Required="true">
+                                    <MudSelectItem T="int" Value="0">Seleccione una opción</MudSelectItem>
+                                    @foreach (var item in generos)
+                                    {
+                                        <MudSelectItem T="int" Value="@item.IDParametro">@item.Nombre</MudSelectItem>
+                                    }
+                                </MudSelect>
+                                @* <MudSelect T="int?"
+                                @bind-Value="registerModel!.InfoPersonal!.IDParametroGenero"
+                                Label="Género"
+                                Variant="Variant.Outlined"
+                                Immediate="true"
+                                ValidateOnBlur="true"
+                                Required="true"
+                                RequiredError="Debe seleccionar un género"
+                                For="@(() => registerModel!.InfoPersonal!.IDParametroGenero)">
+                                <MudSelectItem T="int?" Value="null">Seleccione una opción</MudSelectItem>
+                                @foreach (var item in generos)
+                                {
+                                <MudSelectItem T="int?" Value="@item.IDParametro">@item.Nombre</MudSelectItem>
+                                }
+                                </MudSelect> *@
+                            </MudItem>
+
+                            <!-- Correo -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel!.InfoPersonal!.Correo"
+                                              Label="Correo Electrónico"
+                                              Variant="Variant.Outlined"
+                                              InputType="InputType.Email"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+
+                            <!-- Teléfono -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudItem xs="12" Class="mb-4">
+                                    <MudTextField @bind-Value="registerModel!.InfoPersonal!.Telefono"
+                                                  Label="Teléfono"
+                                                  Variant="Variant.Outlined"
+                                                  InputType="InputType.Telephone"
+                                                  Immediate="true"
+                                                  ValidateOnBlur="true"
+                                                  Required="true" />
+                                </MudItem>
+                            </MudItem>
+                            <!-- Dirección -->
+                            <MudItem xs="12" Class="mb-4">
+                                <MudTextField @bind-Value="registerModel!.InfoPersonal!.Direccion"
+                                              Label="Dirección"
+                                              Variant="Variant.Outlined"
+                                              InputType="InputType.Text"
+                                              Immediate="true"
+                                              ValidateOnBlur="true"
+                                              Required="true" />
+                            </MudItem>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudTabPanel>
+        </MudTabs>
+
+    </EditForm>
+</MudContainer>
+
+@code {
+
+    [Parameter]
+    public UsuarioDTO UserData { get; set; } = new UsuarioDTO();
+
+    private UsuarioDTO registerModel = new UsuarioDTO();
+    private List<RoleDTO> roles = new List<RoleDTO>();
+    private List<CompaniaDTO> companias = new List<CompaniaDTO>();
+    private List<CentroOperativoDTO> centroOperativo = new List<CentroOperativoDTO>();
+    private List<ParametroDTO> generos = new List<ParametroDTO>();
+    private List<ParametroDTO> tiposDocumento = new List<ParametroDTO>();
+
+
+    private EditContext? editContext;
+
+    [Parameter]
+    public EventCallback<bool> OnValidityChanged { get; set; }
+
+    private bool showValidation = false;
+    private bool showPassword = false;
+    private string? NombreUsuario { get; set; }
+
+    [CascadingParameter]
+    public IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (UserData != null)
+        {
+            // string keyBase = _config!.GetValue<string>("KeyBase")!;
+            // //Configuration.GetValue<string>("BaseUrl");
+            // string clave = UserData.Contrasena;
+
+            registerModel = new UsuarioDTO
+                {
+                    IDUsuario = UserData.IDUsuario,
+                    IDRol = UserData.IDRol,
+                    NombreRol = UserData.NombreRol,
+                    IDCompania = UserData.IDCompania,
+                    IDCentroOperativo = UserData.IDCentroOperativo,
+                    NombredeUsuario = UserData.NombredeUsuario,
+                    Estado = UserData.Estado,
+                    FechaExpiracionRol = UserData.FechaExpiracionRol,
+                    FechadeCreacion = UserData.FechadeCreacion,
+                    CreadoPor = UserData.CreadoPor,
+                    InfoPersonal = UserData.InfoPersonal
+                };
+
+            // Contrasena = cifrador.Desencriptar(clave, keyBase),
+            // ConfirmarContrasena = cifrador.Desencriptar(clave, keyBase),
+        }
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    //protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
+    {
+        registerModel = new UsuarioDTO();
+        registerModel.IDCompania = 0;
+        registerModel.IDCentroOperativo = 0;
+        registerModel.IDRol = 0;
+        registerModel!.InfoPersonal = new InfoPersonalDTO();
+        registerModel!.InfoPersonal.IDParametroGenero = 0;
+        registerModel!.InfoPersonal.IDParametroTipoDocumento = 0;
+        //editContext = new EditContext(registerModel);
+
+        editContext = new EditContext(registerModel);
+        // editContext.OnFieldChanged += async (sender, e) =>
+        // {
+        //     await CheckFormValidity();
+        // };
+
+        roles = getRol();
+        companias = getCompania();
+        centroOperativo = getCentroOperativo();
+        generos = getGenero();
+        tiposDocumento = getTiposdeDocumento();
+
+        NombreUsuario = await AuthService.GetUserNameAsync();
+    }
+
+
+    // private async Task CheckFormValidity()
+    // {
+    //     var isValid = CanSubmit();
+    //     await OnValidityChanged.InvokeAsync(isValid);
+    // }
+
+    public async Task<string> HandleRegister()
+    {
+        string response = string.Empty;
+
+        if (UserData == null)
+        {
+            response = await HandleInsert();
+        }
+        else
+        {
+            response = await HandleUpdate();
+        }
+
+        return response;
+    }
+
+    public async Task<string> HandleInsert()
+    {
+        LoadingService.Show();
+
+        showValidation = true;
+
+        // if (!CanSubmit())
+        // {
+        //     LoadingService.Hide();
+        //     // Mostrar error o cancelar el envío
+        //     return "Algunos campos son obligatorios";
+        // }
+
+        registerModel.CreadoPor = NombreUsuario!;
+        registerModel.Estado = true;
+        registerModel!.InfoPersonal!.CreadoPor = NombreUsuario!;
+
+        var result = await AuthService.Register(registerModel);
+        LoadingService.Hide();
+
+        return result;
+    }
+
+    public async Task<string> HandleUpdate()
+    {
+        LoadingService.Show();
+
+        showValidation = true;
+
+        // if (!CanSubmit())
+        // {
+        //     LoadingService.Hide();
+        //     // Mostrar error o cancelar el envío
+        //     return "Algunos campos son obligatorios";
+        // }
+
+        registerModel.CreadoPor = NombreUsuario!;
+        registerModel.Estado = true;
+        registerModel!.InfoPersonal!.CreadoPor = NombreUsuario!;
+
+        var result = await AuthService.UpdateUserAsync(registerModel);
+        LoadingService.Hide();
+
+        return result!;
+    }
+
+    private void iniciaSesionUser()
+    {
+        navigationManager.NavigateTo("/login");
+    }
+
+    private List<RoleDTO> getRol()
+    {
+        return new List<RoleDTO>
+        {
+            new() { IDRol = 1, Descripcion = "Administrador" },
+            new() { IDRol = 2, Descripcion = "Empleado" }
+        };
+    }
+
+    private List<CompaniaDTO> getCompania()
+    {
+        return new List<CompaniaDTO>
+        {
+            new() { IDCompania = 1, NombreCompania = "SIESACO" }
+        };
+    }
+
+    private List<CentroOperativoDTO> getCentroOperativo()
+    {
+        return new List<CentroOperativoDTO>
+        {
+            new() { IDCentroOperativo = 1, NombreCO = "Centro CA0175" }
+        };
+    }
+
+    private List<ParametroDTO> getGenero()
+    {
+        return new List<ParametroDTO>
+        {
+            new() { IDParametro = 1, Nombre = "Hombre" },
+            new() { IDParametro = 2, Nombre = "Mujer" }
+        };
+    }
+
+    private List<ParametroDTO> getTiposdeDocumento()
+    {
+        return new List<ParametroDTO>
+        {
+            new() { IDParametro = 1, Nombre = "Cédula" },
+            new() { IDParametro = 2, Nombre = "Pasaporte" },
+            new() { IDParametro = 3, Nombre = "Tarjeta de Identidad" },
+            new() { IDParametro = 4, Nombre = "Cédula Extranjería" },
+            new() { IDParametro = 5, Nombre = "VISA" },
+            new() { IDParametro = 6, Nombre = "Libreta Militar" },
+            new() { IDParametro = 7, Nombre = "Libreta Conducción" },
+            new() { IDParametro = 8, Nombre = "Registro Civil" },
+        };
+    }
+
+    public bool CanSubmit()
+    {
+        bool fieldsFilled = false;
+        bool passwordValid = false;
+        bool samePasswordValid = false;
+
+        bool isValid = true;
+
+        if (editContext == null) return false;
+
+        #region Validación Campos vacíos
+        // 1. Campos no vacíos
+        if (UserData == null)
+        {
+            fieldsFilled = registerModel.IDRol != 0
+                        && registerModel.IDCompania != 0 && registerModel.IDCentroOperativo != 0
+                        && !string.IsNullOrWhiteSpace(registerModel.FechaExpiracionRol.ToString())
+                        && !string.IsNullOrWhiteSpace(registerModel.NombredeUsuario)
+                        && !string.IsNullOrWhiteSpace(registerModel.Contrasena)
+                        && !string.IsNullOrWhiteSpace(registerModel.ConfirmarContrasena)
+                        && registerModel!.InfoPersonal!.IDParametroTipoDocumento != 0
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Documento)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Nombres)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Apellidos)
+                        && registerModel!.InfoPersonal!.IDParametroGenero != 0
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Correo)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Telefono)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Direccion);
+
+            // 2. Contraseña con al menos 3 caracteres
+            passwordValid = registerModel.Contrasena?.Length >= 5;
+            // 3. Validar si las contraseña son iguales
+            samePasswordValid = registerModel.Contrasena == registerModel.ConfirmarContrasena;
+            // 3. Validación de EditContext
+            isValid = editContext!.Validate();
+            registerModel.IsUpdatePassword = true;
+        }
+        else
+        {
+            fieldsFilled = registerModel.IDRol != 0
+                        && registerModel.IDCompania != 0 && registerModel.IDCentroOperativo != 0
+                        && !string.IsNullOrWhiteSpace(registerModel.FechaExpiracionRol.ToString())
+                        && !string.IsNullOrWhiteSpace(registerModel.NombredeUsuario)
+                        && registerModel!.InfoPersonal!.IDParametroTipoDocumento != 0
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Documento)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Nombres)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Apellidos)
+                        && registerModel!.InfoPersonal!.IDParametroGenero != 0
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Correo)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Telefono)
+                        && !string.IsNullOrWhiteSpace(registerModel!.InfoPersonal!.Direccion);
+
+            //passwordValid = registerModel.Contrasena?.Length >= 5
+            if (!string.IsNullOrWhiteSpace(registerModel.Contrasena))
+            {
+                passwordValid = registerModel.Contrasena?.Length >= 5;
+                samePasswordValid = registerModel.Contrasena == registerModel.ConfirmarContrasena;
+                registerModel.IsUpdatePassword = true;
+            }
+            else
+            {
+                passwordValid = true;
+                samePasswordValid = true;
+                registerModel.IsUpdatePassword = false;
+
+                //Se asigna para que la validación en la api pase. Se determina NoChanges como parte de la validación para identificar si no hubo cambios en la contraseña.
+                registerModel.Contrasena = "NoChanges";
+                registerModel.ConfirmarContrasena = "NoChanges";
+            }
+        }
+        #endregion
+        return fieldsFilled && isValid && passwordValid && samePasswordValid;
+    }
+
+    private void HandleFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        var isValid = editContext!.Validate();
+        OnValidityChanged.InvokeAsync(isValid).ContinueWith(t =>
+        {
+            if (t.IsFaulted) Console.Error.WriteLine(t.Exception);
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    public bool IsFormValid() => editContext?.Validate() ?? false;
+
+    public void Dispose()
+    {
+        if (editContext != null)
+        {
+            editContext.OnFieldChanged -= HandleFieldChanged;
+        }
+    }
+
+}

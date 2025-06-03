@@ -1,0 +1,245 @@
+﻿@page "/registerCompania"
+@inject ICompanyService CompanyService
+@inject IAuthService AuthService
+@inject NavigationManager navigationManager
+@inject SweetAlertService SweetAlert
+@inject LoadingDialogService LoadingService
+
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="py-16">
+    <EditForm Model="@registerModel" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+            <MudGrid>
+                <MudItem xs="6" Class="mb-4">
+                    <MudTextField @bind-Value="registerModel.IDSiesa"
+                                  Label="ID de Siesa"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Number"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  Pattern="^[0-9]*$"
+                                  For="@(() => registerModel.IDSiesa)" />
+                </MudItem>
+                <MudItem xs="6" Class="mb-4">
+                    <MudTextField @bind-Value="registerModel.NombreCompania"
+                                  Label="Nombre de la Compañía"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Text"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => registerModel.NombreCompania)" />
+                </MudItem>
+                <MudItem xs="6" Class="mb-4">
+                    <MudTextField @bind-Value="registerModel.NombreBD"
+                                  Label="Nombre de la Base de Datos"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Text"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => registerModel.NombreBD)" />
+                </MudItem>
+                <MudItem xs="6" Class="mb-4">
+                    <MudTextField @bind-Value="registerModel.NombreConexionBD"
+                                  Label="Nombre Conexión Base de Datos"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Text"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => registerModel.NombreConexionBD)" />
+                </MudItem>
+                <MudItem xs="12" Class="mb-4">
+                    <MudTextField @bind-Value="registerModel.UrlWebServiceSiesa"
+                                  Label="Url Web Service Siesa"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Text"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => registerModel.UrlWebServiceSiesa)" />
+                </MudItem>
+                <MudItem xs="6" Class="mb-4">
+                    <MudTextField @bind-Value="registerModel.UsuarioWebService"
+                                  Label="Usuario Web Service Siesa"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Text"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => registerModel.UsuarioWebService)" />
+                </MudItem>
+                <MudItem xs="6" Class="mb-4">
+                    <MudTextField @bind-Value="registerModel.ClaveWebService"
+                                  Label="Clave Web Service Siesa"
+                                  Variant="Variant.Outlined"
+                                  InputType="@PasswordInput"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@PasswordInputIcon"
+                                  OnAdornmentClick="ButtonTestclick"
+                                  AdornmentAriaLabel="Mostrar Contraseña"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => registerModel.ClaveWebService)" />                    
+                </MudItem>
+            </MudGrid>
+        </MudTabs>
+    </EditForm>
+</MudContainer>
+
+
+@code {
+    [Parameter]
+    public CompaniaDTO? CompanyData { get; set; } = null;
+    private CompaniaDTO registerModel = new CompaniaDTO();
+    private IEnumerable<DataGeneralResponseDTO> siesa = new List<DataGeneralResponseDTO>();
+
+    private bool showValidation = false;
+    private string? NombreUsuario { get; set; }
+    
+    bool isShow;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+
+    private EditContext? editContext;
+
+    [Parameter]
+    public EventCallback<bool> OnValidityChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NombreUsuario = await AuthService.GetUserNameAsync();
+
+        registerModel = new CompaniaDTO();
+        registerModel.IDCompania = 0;
+        registerModel.NombreCompania = string.Empty;
+        registerModel.IDSiesa = 0;
+        registerModel.NombreBD = string.Empty;
+        registerModel.UrlWebServiceSiesa = string.Empty;
+        registerModel.UsuarioWebService = string.Empty;
+        registerModel.ClaveWebService = string.Empty;
+        registerModel.Estado = true;
+        registerModel.FechadeCreacion = new DateTime();
+        registerModel.CreadoPor = NombreUsuario!;
+
+        editContext = new EditContext(registerModel);
+    }
+
+    void ButtonTestclick()
+    {
+        @if (isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (CompanyData != null)
+        {
+            registerModel = new CompaniaDTO
+                {
+                    IDCompania = CompanyData.IDCompania,
+                    NombreCompania = CompanyData.NombreCompania,
+                    IDSiesa = CompanyData.IDSiesa,
+                    NombreBD = CompanyData.NombreBD,
+                    NombreConexionBD = CompanyData.NombreConexionBD,
+                    UrlWebServiceSiesa = CompanyData.UrlWebServiceSiesa,
+                    UsuarioWebService = CompanyData.UsuarioWebService,
+                    ClaveWebService = CompanyData.ClaveWebService,
+                    Estado = CompanyData.Estado,
+                    FechadeCreacion = CompanyData.FechadeCreacion,
+                    CreadoPor = CompanyData.CreadoPor!
+                };
+        }
+    }
+
+    public async Task<string> HandleRegister()
+    {
+        string response = string.Empty;
+
+        if (CompanyData == null)
+        {
+            response = await HandleInsert();
+        }
+        else
+        {
+            response = await HandleUpdate();
+        }
+
+        return response;
+    }
+
+    public async Task<string> HandleInsert()
+    {
+        LoadingService.Show();
+
+        showValidation = true;
+        //registerModel.IDSiesa = IDSi
+        var result = await CompanyService.Register(registerModel);
+        LoadingService.Hide();
+
+        return result;
+    }
+
+    public async Task<string> HandleUpdate()
+    {
+        LoadingService.Show();
+
+        showValidation = true;
+
+        registerModel.CreadoPor = NombreUsuario!;
+        registerModel.Estado = true;
+
+        var result = await CompanyService.UpdateCompaniaAsync(registerModel);
+        LoadingService.Hide();
+
+        return result!;
+    }
+
+    public bool CanSubmit()
+    {
+        bool fieldsFilled = false;
+        bool passwordValid = false;
+        bool samePasswordValid = false;
+
+        bool isValid = true;
+
+        if (editContext == null) return false;
+
+        #region Validación Campos vacíos
+        // 1. Campos no vacíos
+        fieldsFilled = !string.IsNullOrWhiteSpace(registerModel.NombreCompania)
+                        && registerModel.IDSiesa != 0
+                        && !string.IsNullOrWhiteSpace(registerModel.NombreBD)
+                        && !string.IsNullOrWhiteSpace(registerModel.NombreConexionBD)
+                        && !string.IsNullOrWhiteSpace(registerModel.UrlWebServiceSiesa)
+                        && !string.IsNullOrWhiteSpace(registerModel.ClaveWebService);
+
+        passwordValid = registerModel.ClaveWebService?.Length >= 5;
+
+        // 3. Validación de EditContext
+        isValid = editContext!.Validate();
+        #endregion
+        return fieldsFilled && isValid && passwordValid;
+    }
+
+
+}

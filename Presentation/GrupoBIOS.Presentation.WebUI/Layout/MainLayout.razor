@@ -1,0 +1,90 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode="_darkMode" />
+<MudDialogProvider FullWidth="true"
+                   MaxWidth="MaxWidth.ExtraSmall"
+                   CloseButton="true"
+                   BackdropClick="false"
+                   NoHeader="true"
+                   Position="DialogPosition.Center"
+                   CloseOnEscapeKey="true"
+                   BackgroundClass="my-custom-class" />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+
+<MudLayout Style="width: 100%;">
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       OnClick="@((e) => DrawerToggle())" />
+        <MudLink Href="/"
+                 Typo="Typo.h5"
+                 Class="ml-3"
+                 Color="Color.Inherit">            
+        </MudLink>
+        <MudSpacer />
+        <MudMenu Icon="@Icons.Material.Filled.Settings"
+                 Color="Color.Inherit"
+                 ActivationEvent="@MouseEvent.MouseOver"
+                 AnchorOrigin="Origin.BottomRight"
+                 TransformOrigin="Origin.TopRight">
+              <AuthLinks />  
+        </MudMenu>
+        <MudIconButton Icon="@_icon"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       OnClick="@((e) => DarkModeToggle())" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen"
+               ClipMode="DrawerClipMode.Always"
+               Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        @* <MudContainer MaxWidth="MaxWidth.Large" Style="margin-top: 3rem">
+            @Body
+        </MudContainer> *@
+        <MudContainer MaxWidth="MaxWidth.False" Style="margin-top: 3rem; width: 100%; margin-left: auto; margin-right: auto;">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = false;
+    private bool _darkMode = false;
+    private string _icon = Icons.Material.Filled.DarkMode;
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void DarkModeToggle()
+    {
+        _darkMode = !_darkMode;
+        _icon = _darkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode;
+    }
+}
+
+@* <AuthorizeView>
+    <Authorized>
+        <NavMenu />
+    </Authorized>
+    
+    <NotAuthorized>
+        <!-- Layout para usuarios no autenticados -->
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+            @Body
+        </MudContainer>
+    </NotAuthorized>
+    
+    <Authorizing>
+        <!-- Pantalla de carga mientras verifica autenticación -->
+        <MudContainer Class="d-flex justify-center align-center" Style="height: 100vh">
+            <MudProgressCircular Color="Color.Primary" Size="@Size.Medium" />
+        </MudContainer>
+    </Authorizing>
+</AuthorizeView> *@

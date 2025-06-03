@@ -1,0 +1,19 @@
+﻿<style>
+    .mud-dialog{
+        background-color: rgba(0, 0, 0, 0);
+    }
+</style>
+<DialogContent Style="height: 100%; background-color: rgba(0, 0, 0, 0);">
+    <!-- Barra superior fija -->
+    <div style="position: fixed; top: 0; left: 0; right: 0; z-index: 1;">
+        <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+    </div>
+
+    <!-- Círculo centrado -->
+    <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+        <MudProgressCircular Color="Color.Info"
+                                Indeterminate="true"
+                                Size="Size.Large"
+                                Style="transform: scale(1.5);" />
+    </div>
+</DialogContent>

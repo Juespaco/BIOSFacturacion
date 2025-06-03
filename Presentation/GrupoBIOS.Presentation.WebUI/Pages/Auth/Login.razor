@@ -1,0 +1,222 @@
+﻿@page "/login"
+@layout AuthLayout
+@attribute [AllowAnonymous]
+@inject IAuthService AuthService
+@inject ISiesaService siesaService
+@inject LoadingDialogService LoadingService
+@inject SnackBarService snackBarService
+@inject NavigationManager navManager
+@inject SweetAlertService SweetAlert
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="py-16">
+    <MudCard>
+        <MudCardContent>
+            <h2 class="fw-bold mb3">Grupo BIOS Facturación Almacenamiento</h2>
+            <p class="mb-5">Ingrese Usuario y Password</p>
+            <EditForm Model="loginModel" @ref="editForm">
+                <DataAnnotationsValidator />
+                <MudItem xs="12" Class="mb-4">
+                    <MudTextField @bind-Value="loginModel.NombredeUsuario"
+                                  Label="Nombre de Usuario"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Text"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => loginModel.NombredeUsuario)" />
+                </MudItem>
+                <MudItem xs="12" Class="mb-4">
+                    <MudTextField @bind-Value="loginModel.Contrasena"
+                                  Label="Contraseña"
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Password"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  For="@(() => loginModel.Contrasena)" />
+                </MudItem>
+                <MudItem xs="12" Class="mt-6">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@(isLoading ? null : Icons.Material.Filled.Login)"
+                               FullWidth="true"
+                               Disabled="@(isLoading || !CanSubmit())"
+                               OnClick="HandleLogin">
+                        @if (isLoading)
+                        {
+                            <MudProgressCircular Size="Size.Small"
+                            Color="Color.Inherit"
+                            Class="mr-2" />
+                        }
+                        @(isLoading ? "Cargando..." : "Iniciar Sesión")
+                    </MudButton>
+                </MudItem>
+            </EditForm>
+        </MudCardContent>
+    </MudCard>
+
+    <MudDialog @bind-Visible="_visible" Options="_dialogOptions">
+        <DialogContent>
+            <MudGrid>
+                <MudItem xs="12" md="12">
+                    <MudText Typo="Typo.h6" Class="mb-4">Información de Compañía</MudText>
+                    <MudSelect T="int"                                                                                             
+                    Value="@loginModel.IDCompania"
+                    Label="Seleccione la compañía"
+                    Variant="Variant.Outlined"
+                    Immediate="true"
+                    ValidateOnBlur="true"
+                    Required="true"
+                    Error="@(loginModel.IDCompania == 0)"
+                    ErrorText="Debe seleccionar la compañía"
+                    ValueChanged="@(async (value) => {                                    
+                                    loginModel.IDCompania = value;
+                                    await OnCentrosOperativosAsync(value);
+                                })">
+                        <MudSelectItem T="int" Value="0">Seleccione una opción</MudSelectItem>
+                        @foreach (var item in companias)
+                        {
+                            <MudSelectItem T="int" Value="@item.f_cia">@item.f_razon_social</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="12">
+                    <MudText Typo="Typo.h6" Class="mb-4">Información Centro de Operaciones</MudText>
+                    <MudSelect T="string"
+                    @bind-Value="loginModel.IDCentroOperativo"
+                    Label="Seleccione el centro operativo"
+                    Variant="Variant.Outlined"
+                    Immediate="true"
+                    ValidateOnBlur="true"
+                    Required="true"
+                    Error="@(loginModel.IDCentroOperativo == "0")"
+                    ErrorText="Debe seleccionar el centro operativo">
+                        <MudSelectItem T="string" Value="@null">Seleccione una opción</MudSelectItem>
+                        @foreach (var item in centrosoperativos)
+                        {
+                            <MudSelectItem T="string" Value="@item.f_co">@item.f_co1</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled"
+            Color="Color.Primary"
+            Disabled="@(loginModel.IDCompania == 0 || loginModel.IDCentroOperativo == "0")"
+            OnClick="HandleSelCompania">
+                Aceptar
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudContainer>
+
+@code {
+    private LoginRequestDTO loginModel = new();
+    private UsuarioDTO? respUsuario = new();
+    private string Token = string.Empty;
+
+    private bool isLoading = false;
+    private EditForm? editForm;
+    private EditContext? editContext;
+    private bool _visible = false;
+
+    private IEnumerable<CompaniaSiesaResponseDTO> companias = new List<CompaniaSiesaResponseDTO>();
+    private IEnumerable<CentrosOperativosSiesaResponseDTO> centrosoperativos = new List<CentrosOperativosSiesaResponseDTO>();
+
+    private readonly DialogOptions _dialogOptions = new()
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large,
+            Position = DialogPosition.Center,
+            BackdropClick = false,
+            CloseButton = false
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        editContext = new EditContext(loginModel);
+
+        LoadingService.Show();
+        await GetCompanias();
+        LoadingService.Hide();
+
+    }
+
+    // Verifica si el formulario puede enviarse
+    private bool CanSubmit()
+    {
+        // 1. Campos no vacíos
+        bool fieldsFilled = !string.IsNullOrWhiteSpace(loginModel.NombredeUsuario)
+                        && !string.IsNullOrWhiteSpace(loginModel.Contrasena);
+
+        // 2. Contraseña con al menos 3 caracteres
+        bool passwordValid = loginModel.Contrasena?.Length >= 5 && loginModel.NombredeUsuario?.Length >= 5;
+
+        // 3. Validación pasada (si ya se interactuó con los campos)
+        bool isValid = editContext?.Validate() ?? false;
+
+        return fieldsFilled && passwordValid && isValid;
+    }
+
+    async Task HandleLogin()
+    {
+        if (!CanSubmit()) return;
+
+        isLoading = true;
+        var result = await AuthService.Login(loginModel);
+
+        if (result.IsSuccess)
+        {
+            //navManager.NavigateTo("/");
+            respUsuario = result!.Data!.Usuario;
+            Token = result!.Data!.Token!;
+            _visible = true;
+
+        }
+        else
+        {
+            await SweetAlert.ShowSuccessAsync("Usuario o contraseña incorrectos!", "Usuario no válido");
+        }
+        isLoading = false;
+    }
+
+    async Task HandleSelCompania()
+    {
+        await AuthService.AuthProvider(loginModel.NombredeUsuario, Token, loginModel.IDCompania.ToString(), loginModel.IDCentroOperativo);
+        navManager.NavigateTo("/");
+    }
+
+    async Task GetCompanias()
+    {
+        //companias
+        //GetListCompaniaAsync
+
+        var resp = await siesaService.GetListCompaniaAsync();
+        if (resp.IsSuccess)
+        {
+            companias = resp.Data!;
+        }
+        else
+        {
+            snackBarService.ShowSnackBar("Ha ocurrido un error inesperado.", Severity.Error, Defaults.Classes.Position.TopEnd);
+        }
+    }
+
+    private async Task OnCentrosOperativosAsync(int p_cia)
+    {
+        LoadingService.Show();
+        var resp = await siesaService.GetListCentrosOperativosAsync(p_cia);
+        if (resp.IsSuccess)
+        {
+            LoadingService.Hide();
+            centrosoperativos = resp.Data!;
+        }
+        else
+        {
+            LoadingService.Hide();
+            snackBarService.ShowSnackBar("Ha ocurrido un error inesperado.", Severity.Error, Defaults.Classes.Position.TopEnd);
+        }
+    }
+
+}
