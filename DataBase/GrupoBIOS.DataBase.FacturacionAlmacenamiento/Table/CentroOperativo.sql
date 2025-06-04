@@ -11,7 +11,7 @@
 	[FechaInicialCorte] [datetime] NOT NULL,
 	[CobroPNC] [int] NOT NULL,
 	[Estado] [bit] NOT NULL,
-	[FechadeCreacion] [datetime] NOT NULL,
+	[FechadeCreacion] [datetime] NOT NULL DEFAULT GETDATE(),
 	[CreadoPor] [nvarchar](150) NOT NULL,
  CONSTRAINT [PK_CentroOperativo] PRIMARY KEY CLUSTERED 
 (
