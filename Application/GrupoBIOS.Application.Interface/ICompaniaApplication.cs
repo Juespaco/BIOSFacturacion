@@ -7,5 +7,7 @@ namespace GrupoBIOS.Application.Interface
     public interface ICompaniaApplication : IApplication<CompaniaDTO>
     {
         Task<Response<bool>> DesactivarCompania(int IDCompania);
+
+        Task<Response<ConfiguracionCompaniaDTO>> ObtenerConfiguracionPorIDSiesaAsync(int IDSiesa);
     }
 }

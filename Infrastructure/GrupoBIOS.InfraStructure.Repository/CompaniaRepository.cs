@@ -2,6 +2,7 @@
 using Dapper;
 using GrupoBIOS.Domain.Entity;
 using GrupoBIOS.Domain.Entity.Request.Auth;
+using GrupoBIOS.Domain.Entity.TuProyecto.Domain.Entities;
 using GrupoBIOS.InfraStructure.Interface;
 using GrupoBIOS.Transversal.Common;
 using System.Data;
@@ -156,5 +157,34 @@ namespace GrupoBIOS.InfraStructure.Repository
                 throw;
             }
         }
+
+        public async Task<ConfiguracionCompania> ObtenerConfiguracionPorIDSiesaAsync(int IDSiesa)
+        {
+            using var connection = _connectionFactory.GetConnection;
+            var parameters = new DynamicParameters();
+            parameters.Add("IDSiesa", IDSiesa);
+
+            var result = new ConfiguracionCompania();
+
+            try
+            {
+                using var multi = await connection.QueryMultipleAsync("sp_Compania_ObtenerConfiguracionPorId", parameters, commandType: CommandType.StoredProcedure);
+
+                result.Compania = await multi.ReadSingleOrDefaultAsync<Compania>();
+                result.Notificaciones = (await multi.ReadAsync<Notificacion>()).ToList();
+                result.Niveles = (await multi.ReadAsync<Nivel>()).ToList();
+                result.CentrosOperativos = (await multi.ReadAsync<CentroOperativo>()).ToList();
+                result.Pncs = (await multi.ReadAsync<Pnc>()).ToList();
+                result.Excepciones = (await multi.ReadAsync<Excepcion>()).ToList();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

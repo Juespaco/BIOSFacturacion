@@ -173,5 +173,26 @@ namespace GrupoBIOS.Application.Main
 
             return response;
         }
+
+        public async Task<Response<ConfiguracionCompaniaDTO>> ObtenerConfiguracionPorIDSiesaAsync(int IDSiesa)
+        {
+            var response = new Response<ConfiguracionCompaniaDTO>();
+            try
+            {
+                var entity = await _Domain.ObtenerConfiguracionPorIDSiesaAsync(IDSiesa);
+                response.Data = _mapper.Map<ConfiguracionCompaniaDTO>(entity);
+                response.IsSuccess = true;
+                response.Message = "Consulta Exitosa!";
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+                _logger.LogError(ex.Message);
+            }
+
+            return response;
+        }
+
     }
 }
