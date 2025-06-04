@@ -100,102 +100,102 @@ namespace GrupoBIOS.Services.API.Controllers
             }
         }
 
-        [HttpPost("CrearCompaniaAsync")]
-        public async Task<IActionResult> CrearCompaniaAsync(CompaniaDTO model)
-        {
-            Response<string> response = new Response<string>();
+        //[HttpPost("CrearCompaniaAsync")]
+        //public async Task<IActionResult> CrearCompaniaAsync(CompaniaDTO model)
+        //{
+        //    Response<string> response = new Response<string>();
 
-            try
-            {
-                if (model == null)
-                    return BadRequest();
+        //    try
+        //    {
+        //        if (model == null)
+        //            return BadRequest();
 
-                response = await this._Application.InsertAsync(model);
+        //        response = await this._Application.InsertAsync(model);
 
-                if (response.IsSuccess)
-                {
+        //        if (response.IsSuccess)
+        //        {
 
-                    return Ok(response);
-                }
-                else
-                {
-                    return BadRequest(response);
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Data = string.Empty;
-                response.IsSuccess = false;
-                response.Message = ex.Message;
+        //            return Ok(response);
+        //        }
+        //        else
+        //        {
+        //            return BadRequest(response);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.Data = string.Empty;
+        //        response.IsSuccess = false;
+        //        response.Message = ex.Message;
 
-                _logger.LogError(ex.Message);
+        //        _logger.LogError(ex.Message);
 
-                return BadRequest(response);
-            }
-        }
+        //        return BadRequest(response);
+        //    }
+        //}
 
-        [HttpPost("ActualizarCompaniaAsync")]
-        public async Task<IActionResult> ActualizarCompaniaAsync(CompaniaDTO model)
-        {
-            Response<string> response = new Response<string>();
+        //[HttpPost("ActualizarCompaniaAsync")]
+        //public async Task<IActionResult> ActualizarCompaniaAsync(CompaniaDTO model)
+        //{
+        //    Response<string> response = new Response<string>();
 
-            try
-            {
-                if (model == null)
-                    return BadRequest();
+        //    try
+        //    {
+        //        if (model == null)
+        //            return BadRequest();
 
-                response = await this._Application.UpdateAsync(model);
+        //        response = await this._Application.UpdateAsync(model);
 
-                if (response.IsSuccess)
-                {
+        //        if (response.IsSuccess)
+        //        {
 
-                    return Ok(response);
-                }
-                else
-                {
-                    return BadRequest(response);
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Data = string.Empty;
-                response.IsSuccess = false;
-                response.Message = ex.Message;
+        //            return Ok(response);
+        //        }
+        //        else
+        //        {
+        //            return BadRequest(response);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.Data = string.Empty;
+        //        response.IsSuccess = false;
+        //        response.Message = ex.Message;
 
-                _logger.LogError(ex.Message);
+        //        _logger.LogError(ex.Message);
 
-                return BadRequest(response);
-            }
-        }
+        //        return BadRequest(response);
+        //    }
+        //}
 
-        [HttpDelete("DesactivarCompaniaAsync")]
-        public async Task<IActionResult> DesactivarCompaniaAsync(int IDCompania)
-        {
-            Response<bool> response = new Response<bool>();
+        //[HttpDelete("DesactivarCompaniaAsync")]
+        //public async Task<IActionResult> DesactivarCompaniaAsync(int IDCompania)
+        //{
+        //    Response<bool> response = new Response<bool>();
 
-            try
-            {
-                response = await _Application.DesactivarCompania(IDCompania);
-                if (response.IsSuccess)
-                {
-                    return Ok(response);
-                }
-                else
-                {
-                    return BadRequest(response);
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Data = false;
-                response.IsSuccess = false;
-                response.Message = ex.Message;
+        //    try
+        //    {
+        //        response = await _Application.DesactivarCompania(IDCompania);
+        //        if (response.IsSuccess)
+        //        {
+        //            return Ok(response);
+        //        }
+        //        else
+        //        {
+        //            return BadRequest(response);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.Data = false;
+        //        response.IsSuccess = false;
+        //        response.Message = ex.Message;
 
-                _logger.LogError(ex.Message);
+        //        _logger.LogError(ex.Message);
 
-                return BadRequest(response);
-            }
-        }
+        //        return BadRequest(response);
+        //    }
+        //}
 
         [HttpGet("ObtenerConfiguracionCompaniaPorIDSiesa")]
         public async Task<IActionResult> ObtenerConfiguracionCompaniaPorIDSiesa(int IDSiesa)
@@ -217,6 +217,40 @@ namespace GrupoBIOS.Services.API.Controllers
             catch (Exception ex)
             {
                 response.Data = null;
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+
+                _logger.LogError(ex.Message);
+
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost("CrearActualizarConfiguracionCompaniaAsync")]
+        public async Task<IActionResult> CrearActualizarConfiguracionCompaniaAsync(ConfiguracionCompaniaDTO model)
+        {
+            Response<string> response = new Response<string>();
+
+            try
+            {
+                if (model == null || string.IsNullOrEmpty(model.Compania.IDSiesa.ToString()) || model.Compania.IDSiesa == 0)
+                    return BadRequest();
+
+                response = await this._Application.ConfigurationAsync(model);
+
+                if (response.IsSuccess)
+                {
+
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Data = string.Empty;
                 response.IsSuccess = false;
                 response.Message = ex.Message;
 

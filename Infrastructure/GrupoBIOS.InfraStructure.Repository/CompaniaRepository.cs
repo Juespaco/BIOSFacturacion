@@ -127,6 +127,45 @@ namespace GrupoBIOS.InfraStructure.Repository
                 throw;
             }
         }
+        public async Task<string> CompanyConfigurationAsync(ConfiguracionCompania model)
+        {
+            try
+            {
+                using (var connection = _connectionFactory.GetConnection)
+                {
+                    var query = "sp_ConfiguracionCompania_InsertarActualizar";
+                    var parameters = new DynamicParameters();
+                    //Compañia
+                    parameters.Add("@IDCompania", model.Compania.IDCompania);
+                    parameters.Add("@NombreCompania", model.Compania.NombreCompania);
+                    parameters.Add("@IDSiesa", model.Compania.IDSiesa);
+                    parameters.Add("@NombreBD", model.Compania.NombreBD);
+                    parameters.Add("@NombreConexionBD", model.Compania.NombreConexionBD);
+                    parameters.Add("@UrlWebServiceSiesa", model.Compania.UrlWebServiceSiesa);
+                    parameters.Add("@UsuarioWebService", model.Compania.UsuarioWebService);
+                    parameters.Add("@ClaveWebService", model.Compania.ClaveWebService);
+                    parameters.Add("@CreadoPor", model.Compania.CreadoPor);
+                    //Notificacion
+                    parameters.Add("@IdNotificacion", model.Notificacion.IdNotificacion);
+                    parameters.Add("@Puerto", model.Notificacion.Puerto);
+                    parameters.Add("@SSL", model.Notificacion.SSL);
+                    parameters.Add("@Host", model.Notificacion.Host);
+                    parameters.Add("@EmailRemitente", model.Notificacion.EmailRemitente);
+                    parameters.Add("@NombreRemitente", model.Notificacion.NombreRemitente);
+                    parameters.Add("@UsuarioEmail", model.Notificacion.UsuarioEmail);
+                    parameters.Add("@ContrasenaEmail", model.Notificacion.ContrasenaEmail);
+                    parameters.Add("@Estado", model.Notificacion.Estado);
+
+                    //Persistir la info en la bd
+                    var result = await connection.QuerySingleOrDefaultAsync<string>(query, param: parameters, commandType: System.Data.CommandType.StoredProcedure);
+                    return result!;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public async Task<string> UpdateAsync(Compania model)
         {

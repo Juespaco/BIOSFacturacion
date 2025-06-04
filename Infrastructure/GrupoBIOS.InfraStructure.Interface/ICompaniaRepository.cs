@@ -7,5 +7,7 @@ namespace GrupoBIOS.InfraStructure.Interface
         Task<bool> DesactivarCompania(int IDCompania);
 
         Task<ConfiguracionCompania> ObtenerConfiguracionPorIDSiesaAsync(int IDSiesa);
+
+        Task<string> CompanyConfigurationAsync(ConfiguracionCompania model);
     }
 }

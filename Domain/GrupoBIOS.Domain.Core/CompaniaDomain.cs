@@ -54,5 +54,9 @@ namespace GrupoBIOS.Domain.Core
             return await _unityOfWork.Compania.ObtenerConfiguracionPorIDSiesaAsync(IDSiesa);
         }
 
+        public async Task<string> CompanyConfigurationAsync(ConfiguracionCompania model)
+        {
+            return await _unityOfWork.Compania.CompanyConfigurationAsync(model);
+        }
     }
 }

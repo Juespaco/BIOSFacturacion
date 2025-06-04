@@ -194,5 +194,39 @@ namespace GrupoBIOS.Application.Main
             return response;
         }
 
+        public async Task<Response<string>> ConfigurationAsync(ConfiguracionCompaniaDTO modelDto)
+        {
+            var response = new Response<string>();
+            try
+            {
+                var resp = _mapper.Map<ConfiguracionCompania>(modelDto);
+                response.Data = await _Domain.CompanyConfigurationAsync(resp);
+
+                if (response.Data == "OK")
+                {
+                    response.IsSuccess = true;
+                    response.Message = "Registro Exitoso!";
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.Message = response.Data;
+                    response.Data = string.Empty;
+
+                    _logger.LogWarning(response.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Data = string.Empty;
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+
+                _logger.LogError(ex.Message);
+            }
+
+            return response;
+        }
+
     }
 }

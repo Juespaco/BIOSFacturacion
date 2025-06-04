@@ -9,5 +9,7 @@ namespace GrupoBIOS.Application.Interface
         Task<Response<bool>> DesactivarCompania(int IDCompania);
 
         Task<Response<ConfiguracionCompaniaDTO>> ObtenerConfiguracionPorIDSiesaAsync(int IDSiesa);
+
+        Task<Response<string>> ConfigurationAsync(ConfiguracionCompaniaDTO modelDto);
     }
 }

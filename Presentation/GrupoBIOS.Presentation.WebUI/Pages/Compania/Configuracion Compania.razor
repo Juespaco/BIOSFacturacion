@@ -62,7 +62,7 @@
                 <Compania @ref="companyForm" Model="Model.Compania" />
             </MudExpansionPanel>
             <MudExpansionPanel Text="Configuración E-mail" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <Notificacion Model="Model.Notificacion"/>
+                <Notificacion  @ref="notificationForm" Model="Model.Notificacion"/>
             </MudExpansionPanel>
             <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
                 <Nivel Model="Model.Niveles"/>
@@ -90,6 +90,7 @@
     private MudForm _form;
     private ConfiguracionCompaniaDTO Model { get; set; } = new ConfiguracionCompaniaDTO();
     private Compania companyForm;
+    private Notificacion notificationForm;
     private bool isSaving = false;
     private bool _formIsValid = false;
 
@@ -135,7 +136,15 @@
                !string.IsNullOrWhiteSpace(Model.Compania.NombreConexionBD) &&
                !string.IsNullOrWhiteSpace(Model.Compania.UrlWebServiceSiesa) &&
                !string.IsNullOrWhiteSpace(Model.Compania.UsuarioWebService) &&
-               !string.IsNullOrWhiteSpace(Model.Compania.ClaveWebService);
+               !string.IsNullOrWhiteSpace(Model.Compania.ClaveWebService)&&
+               
+               //Verificar campos de notificaciones
+               !string.IsNullOrWhiteSpace(Model.Notificacion.Puerto.ToString())&&
+               !string.IsNullOrWhiteSpace(Model.Notificacion.Host)&&
+               !string.IsNullOrWhiteSpace(Model.Notificacion.EmailRemitente)&&
+               !string.IsNullOrWhiteSpace(Model.Notificacion.NombreRemitente)&&
+               !string.IsNullOrWhiteSpace(Model.Notificacion.UsuarioEmail)&&
+               !string.IsNullOrWhiteSpace(Model.Notificacion.ContrasenaEmail);
     }
 
     private async Task LoadCompanyConfigurationByID(int IDSiesa)
@@ -188,7 +197,7 @@
         showValidation = true;
         string response = string.Empty;
         Model.Compania = companyForm.GetCompanyData();
-
+        Model.Notificacion = notificationForm.GetNotificationData();
         if (!IsFormValid())
         {
             snackBarService.ShowSnackBar("Se deben llenar todos los campos requeridos.", Severity.Error, Defaults.Classes.Position.TopEnd);
@@ -218,10 +227,11 @@
         showValidation = true;
 
         Model.Compania.CreadoPor = NombreUsuario!;
+        Model.Notificacion.CreadoPor = NombreUsuario!;
         Model.Compania.Estado = true;
         Model.Compania.IDSiesa = IDSiesa;
 
-        var result = await compService.UpdateCompaniaAsync(Model.Compania);
+        var result = await compService.ConfigurarCompania(Model);
         LoadingService.Hide();
 
         return result!;

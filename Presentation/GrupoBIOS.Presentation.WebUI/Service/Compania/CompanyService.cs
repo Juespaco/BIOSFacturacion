@@ -22,37 +22,37 @@ namespace GrupoBIOS.Presentation.WebUI.Service.Compania
             _httpClient = httpClient;
         }
 
-        public async Task<Response<bool>> DesactivarCompania(int IDCompania)
-        {
-            Response<bool> respData = new Response<bool>();
+        //public async Task<Response<bool>> DesactivarCompania(int IDCompania)
+        //{
+        //    Response<bool> respData = new Response<bool>();
 
-            try
-            {
-                var response = await _httpClient.DeleteAsync($"api/Compania/DesactivarCompaniaAsync?IDCompania={IDCompania}");
+        //    try
+        //    {
+        //        var response = await _httpClient.DeleteAsync($"api/Compania/DesactivarCompaniaAsync?IDCompania={IDCompania}");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    respData = await response.Content.ReadFromJsonAsync<Response<bool>?>()
-                                ?? new Response<bool>
-                                {
-                                    IsSuccess = false,
-                                    Message = "La respuesta no contenía datos válidos"
-                                };
-                }
-                else
-                {
-                    respData.IsSuccess = false;
-                    respData.Message = $"Error: {response.StatusCode}";
-                }
-            }
-            catch (Exception ex)
-            {
-                respData.IsSuccess = false;
-                respData.Message = $"Error: {ex.Message}";
-            }
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            respData = await response.Content.ReadFromJsonAsync<Response<bool>?>()
+        //                        ?? new Response<bool>
+        //                        {
+        //                            IsSuccess = false,
+        //                            Message = "La respuesta no contenía datos válidos"
+        //                        };
+        //        }
+        //        else
+        //        {
+        //            respData.IsSuccess = false;
+        //            respData.Message = $"Error: {response.StatusCode}";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        respData.IsSuccess = false;
+        //        respData.Message = $"Error: {ex.Message}";
+        //    }
 
-            return respData;
-        }
+        //    return respData;
+        //}
 
         public async Task<Response<CompaniaDTO>> GetCompaniaId(int IDCompania)
         {
@@ -149,44 +149,70 @@ namespace GrupoBIOS.Presentation.WebUI.Service.Compania
             return respData;
         }
 
-        public async Task<string> Register(CompaniaDTO register)
+        //public async Task<string> Register(CompaniaDTO register)
+        //{
+        //    Response<string>? request = new Response<string>();
+
+        //    var registerAsJson = JsonSerializer.Serialize(register);
+
+        //    var response = await _httpClient.PostAsync("api/Compania/CrearCompaniaAsync",
+        //        new StringContent(registerAsJson, Encoding.UTF8, "application/json"));            
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        return "Ha ocurrido un error mientras se creaba el registro."!;
+        //    }
+
+        //    var registerResult = await response.Content.ReadAsStringAsync();
+        //    request = JsonSerializer.Deserialize<Response<string>>(registerResult);
+        //    if (request!.IsSuccess!)
+        //    {
+        //        return "OK";
+        //    }
+        //    else
+        //    {
+        //        return request!.Message!;
+        //    }
+        //}
+
+        //public async Task<string?> UpdateCompaniaAsync(CompaniaDTO register)
+        //{
+        //    Response<string>? request = new Response<string>();
+
+        //    var registerAsJson = JsonSerializer.Serialize(register);
+
+        //    var response = await _httpClient.PostAsync("api/Compania/ActualizarCompaniaAsync",
+        //        new StringContent(registerAsJson, Encoding.UTF8, "application/json"));
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        return "Ha ocurrido un error mientras se actualizaba el registro."!;
+        //    }
+
+        //    var registerResult = await response.Content.ReadAsStringAsync();
+        //    request = JsonSerializer.Deserialize<Response<string>>(registerResult);
+        //    if (request!.IsSuccess!)
+        //    {
+        //        return "OK";
+        //    }
+        //    else
+        //    {
+        //        return request!.Message!;
+        //    }
+        //}
+
+        public async Task<string> ConfigurarCompania(ConfiguracionCompaniaDTO model)
         {
             Response<string>? request = new Response<string>();
 
-            var registerAsJson = JsonSerializer.Serialize(register);
+            var registerAsJson = JsonSerializer.Serialize(model);
 
-            var response = await _httpClient.PostAsync("api/Compania/CrearCompaniaAsync",
-                new StringContent(registerAsJson, Encoding.UTF8, "application/json"));            
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return "Ha ocurrido un error mientras se creaba el registro."!;
-            }
-
-            var registerResult = await response.Content.ReadAsStringAsync();
-            request = JsonSerializer.Deserialize<Response<string>>(registerResult);
-            if (request!.IsSuccess!)
-            {
-                return "OK";
-            }
-            else
-            {
-                return request!.Message!;
-            }
-        }
-
-        public async Task<string?> UpdateCompaniaAsync(CompaniaDTO register)
-        {
-            Response<string>? request = new Response<string>();
-
-            var registerAsJson = JsonSerializer.Serialize(register);
-
-            var response = await _httpClient.PostAsync("api/Compania/ActualizarCompaniaAsync",
+            var response = await _httpClient.PostAsync("api/Compania/CrearActualizarConfiguracionCompaniaAsync",
                 new StringContent(registerAsJson, Encoding.UTF8, "application/json"));
 
             if (!response.IsSuccessStatusCode)
             {
-                return "Ha ocurrido un error mientras se actualizaba el registro."!;
+                return "Ha ocurrido un error mientras se creaba el registro."!;
             }
 
             var registerResult = await response.Content.ReadAsStringAsync();
