@@ -197,5 +197,34 @@ namespace GrupoBIOS.Services.API.Controllers
             }
         }
 
+        [HttpGet("ObtenerConfiguracionCompaniaPorIDSiesa")]
+        public async Task<IActionResult> ObtenerConfiguracionCompaniaPorIDSiesa(int IDSiesa)
+        {
+            Response<ConfiguracionCompaniaDTO> response = new Response<ConfiguracionCompaniaDTO>();
+
+            try
+            {
+                response = await _Application.ObtenerConfiguracionPorIDSiesaAsync(IDSiesa);
+                if (response.IsSuccess)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Data = null;
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+
+                _logger.LogError(ex.Message);
+
+                return BadRequest(response);
+            }
+        }
+
     }
 }
