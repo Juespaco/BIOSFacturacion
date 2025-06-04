@@ -63,6 +63,9 @@
     [Parameter]
     public List<CentroOperativoDTO> Centros { get; set; } = new();
 
+    [Parameter]
+    public EventCallback OnGuardar { get; set; }
+
     private void AgregarNuevo()
     {
         var nueva = new PncDTO();
@@ -99,5 +102,8 @@
         {
             snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
         }
+
+        // Luego de guardar, invocar el callback
+        await OnGuardar.InvokeAsync();
     }
 }

@@ -47,8 +47,12 @@
 @code {
     [Parameter]
     public List<NivelDTO> Model { get; set; } = new();
+
     [Parameter]
     public List<CentroOperativoDTO> Centros { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnGuardar { get; set; }
 
 
     private void AgregarNuevo()
@@ -88,5 +92,6 @@
         {
             snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
         }
+        await OnGuardar.InvokeAsync();
     }
 }

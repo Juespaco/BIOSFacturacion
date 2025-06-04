@@ -55,6 +55,10 @@
 
     [Parameter]
     public int IdCompania { get; set; } = 0;
+
+    [Parameter]
+    public EventCallback OnGuardar { get; set; }
+
     private void AgregarNuevo()
     {
         var nueva = new ExcepcionDTO();
@@ -99,5 +103,6 @@
         {
             snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
         }
+        await OnGuardar.InvokeAsync();
     }
 }

@@ -1,4 +1,9 @@
-﻿<MudPaper Class="p-4">
+﻿@using GrupoBIOS.Presentation.WebUI.Service.CentroOperativo
+@using System.ComponentModel.DataAnnotations
+@inject ICentroOperativoService CentroOperativoService;
+@inject SnackBarService snackBarService
+@inject IAuthService AuthService
+<MudPaper Class="p-4">
     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
 
     <EditForm Model="Model">
@@ -17,7 +22,7 @@
                 <MudTh>Acción</MudTh>
             </HeaderContent>
             <RowTemplate Context="item">
-                <MudTd><MudNumericField @bind-Value="item.IDSiesaCO" Immediate="true" /></MudTd>
+                <MudTd><MudTextField @bind-Value="item.IDSiesaCO" Immediate="true" /></MudTd>
                 <MudTd><MudTextField @bind-Value="item.NombreCO" /></MudTd>
                 <MudTd><MudTextField @bind-Value="item.ReferenciadeCobro" /></MudTd>
                 <MudTd><MudTextField @bind-Value="item.PrefijodeFacturacion" /></MudTd>
@@ -49,9 +54,18 @@
     [Parameter]
     public List<CentroOperativoDTO> Model { get; set; } = new List<CentroOperativoDTO>();
 
+    [Parameter]
+    public int IdCompania { get; set; } = 0;
+
+    [Parameter]
+    public EventCallback OnGuardar { get; set; }
+
     private void AgregarNuevo()
     {
-        
+        var nueva = new CentroOperativoDTO();
+        nueva.Estado = true;
+        nueva.IDCompania = IdCompania;
+        Model.Add(nueva);
     }
 
     private void CambiarEstado(CentroOperativoDTO centro)
@@ -59,9 +73,37 @@
         centro.Estado = !(centro.Estado ?? false);
     }
 
-    private void GuardarCambios()
+    private async Task GuardarCambios()
     {
-        // Aquí iría tu lógica para guardar en backend
-        Console.WriteLine("Guardando...");
+        var isValid = true;
+
+        foreach (var excepcion in Model)
+        {
+            excepcion.CreadoPor = await AuthService.GetUserNameAsync();
+            var validationContext = new ValidationContext(excepcion);
+            var results = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(excepcion, validationContext, results, true))
+            {
+                isValid = false;
+            }
+        }
+
+        if (!isValid)
+        {
+            snackBarService.ShowSnackBar("Por favor llenar todos los campos.", Severity.Warning, Defaults.Classes.Position.TopEnd);
+            return;
+        }
+
+        var result = await CentroOperativoService.Register(Model);
+        if (result == "OK")
+        {
+            snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+        }
+        else
+        {
+            snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
+        }
+        // Luego de guardar, invocar el callback
+        await OnGuardar.InvokeAsync();
     }
 }

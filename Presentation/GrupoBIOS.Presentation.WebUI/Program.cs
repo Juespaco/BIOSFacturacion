@@ -4,6 +4,7 @@ using GrupoBIOS.Presentation.WebUI.Model;
 using GrupoBIOS.Presentation.WebUI.Provider;
 using GrupoBIOS.Presentation.WebUI.Service;
 using GrupoBIOS.Presentation.WebUI.Service.Auth;
+using GrupoBIOS.Presentation.WebUI.Service.CentroOperativo;
 using GrupoBIOS.Presentation.WebUI.Service.Compania;
 using GrupoBIOS.Presentation.WebUI.Service.Excepcion;
 using GrupoBIOS.Presentation.WebUI.Service.Nivel;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IExcepcionService, ExcepcionService>();
 builder.Services.AddScoped<INivelService, NivelService>();
 builder.Services.AddScoped<IPNCService, PNCService>();
+builder.Services.AddScoped<ICentroOperativoService, CentroOperativoService>();
 builder.Services.AddScoped<ISiesaService, SiesaService>();
 
 builder.Services.AddScoped<SweetAlertService>();

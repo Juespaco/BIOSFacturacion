@@ -34,6 +34,7 @@
                 ErrorText="Debe seleccionar la compañía"
                 ValueChanged="@(async (value) => {
                             IDSiesa = value;
+                            _IDSiesa = value;
                             await LoadCompanyConfigurationByID(value);
                 })">
                     <MudSelectItem T="int"
@@ -67,20 +68,20 @@
             @if (Model.Compania.IDCompania>0)
             {
                 <MudExpansionPanel Text="Excepciones" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                    <Excepcion Model="Model.Excepciones" IdCompania="Model.Compania.IDCompania"/>
+                    <Excepcion Model="Model.Excepciones" IdCompania="Model.Compania.IDCompania" OnGuardar="@RefrescarInformacion"/>
                 </MudExpansionPanel>
                 <MudExpansionPanel Text="Centros Operativos" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                    <CentroOperativo Model="Model.CentrosOperativos"/>
+                    <CentroOperativo Model="Model.CentrosOperativos" IdCompania="Model.Compania.IDCompania" OnGuardar="@RefrescarInformacion"/>
                 </MudExpansionPanel>
             }
 
             @if (Model.CentrosOperativos.Count > 0)
             {
                 <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                    <Nivel Model="Model.Niveles" Centros="Model.CentrosOperativos.Where(x=>x.Estado == true).ToList()"/>
+                    <Nivel Model="Model.Niveles" Centros="Model.CentrosOperativos.Where(x=>x.Estado == true).ToList()" OnGuardar="@RefrescarInformacion"/>
                 </MudExpansionPanel>
                 <MudExpansionPanel Text="PNC" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                    <PNC Model="Model.Pncs" Centros="Model.CentrosOperativos.Where(x=>x.Estado == true).ToList()"/>
+                    <PNC Model="Model.Pncs" Centros="Model.CentrosOperativos.Where(x=>x.Estado == true).ToList()" OnGuardar="@RefrescarInformacion"/>
                 </MudExpansionPanel>
             }  
         }
@@ -93,6 +94,7 @@
     private bool _visible;
     private bool showValidation = false;
     private string? NombreUsuario { get; set; }
+    private int _IDSiesa = 0;
 
     private MudForm _form;
     private ConfiguracionCompaniaDTO Model { get; set; } = new ConfiguracionCompaniaDTO();
@@ -242,5 +244,11 @@
         LoadingService.Hide();
 
         return result!;
+    }
+
+    private async Task RefrescarInformacion()
+    {
+        await LoadCompanyConfigurationByID(_IDSiesa); 
+        StateHasChanged(); 
     }
 }
