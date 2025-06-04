@@ -9,6 +9,8 @@ namespace GrupoBIOS.InfraStructure.Interface
         IParametroRepository Parametros { get; }  // Mantenemos la propiedad específica                
         ICompaniaRepository Compania { get; }  // Mantenemos la propiedad específica                
         ICentroOperativoRepository CentroOperativo { get; }  // Mantenemos la propiedad específica                
+        IExcepcionRepository Excepcion { get; }
         TRepository GetRepository<TRepository>() where TRepository : class;  // Método genérico
+
     }
 }

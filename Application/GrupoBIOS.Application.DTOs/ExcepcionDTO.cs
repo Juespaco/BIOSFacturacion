@@ -10,7 +10,7 @@ namespace GrupoBIOS.Application.DTOs
 
     public class ExcepcionDTO
     {
-        public int IdExcepcion { get; set; }
+        public int? IdExcepcion { get; set; }
 
         [Required(ErrorMessage = "El ID de la compañía es requerido")]
         public int IdCompania { get; set; }

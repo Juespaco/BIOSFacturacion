@@ -50,6 +50,7 @@ builder.Services.AddTransient<SiesaAuthHandler>();
 builder.Services.AddHttpClient("SiesaClient")
     .AddHttpMessageHandler<SiesaAuthHandler>();
 
+
 //var appSettingsSection = builder.Configuration.GetSection("Config");
 //builder.Services.Configure<AppSettings>(appSettingsSection);
 
@@ -126,6 +127,9 @@ builder.Services.AddScoped<IParametroApplication, ParametroApplication>();
 builder.Services.AddScoped<ICompaniaRepository, CompaniaRepository>();
 builder.Services.AddScoped<ICompaniaDomain, CompaniaDomain>();
 builder.Services.AddScoped<ICompaniaApplication, CompaniaApplication>();
+builder.Services.AddScoped<IExcepcionRepository, ExcepcionRepository>();
+builder.Services.AddScoped<IExcepcionDomain, ExcepcionDomain>();
+builder.Services.AddScoped<IExcepcionApplication, ExcepcionApplication>();
 
 // Registrar UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

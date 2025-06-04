@@ -8,7 +8,7 @@ namespace GrupoBIOS.Domain.Entity
 {
     public class Excepcion
     {
-        public int IdExcepcion { get; set; }
+        public int? IdExcepcion { get; set; }
         public int IdCompania { get; set; }
         public string? Planta { get; set; }
         public string? Nit { get; set; }
