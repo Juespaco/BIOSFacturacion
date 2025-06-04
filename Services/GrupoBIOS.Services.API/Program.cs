@@ -136,6 +136,10 @@ builder.Services.AddScoped<IPncApplication, PncApplication>();
 builder.Services.AddScoped<INivelRepository, NivelRepository>();
 builder.Services.AddScoped<INivelDomain, NivelDomain>();
 builder.Services.AddScoped<INivelApplication, NivelApplication>();
+builder.Services.AddScoped<ICentroOperativoRepository, CentroOperativoRepository>();
+builder.Services.AddScoped<ICentroOperativoDomain, CentroOperativoDomain>();
+builder.Services.AddScoped<ICentroOperativoApplication, CentroOperativoApplication>();
+
 
 
 // Registrar UnitOfWork
