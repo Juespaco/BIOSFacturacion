@@ -64,18 +64,25 @@
             <MudExpansionPanel Text="Configuración E-mail" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
                 <Notificacion  @ref="notificationForm" Model="Model.Notificacion"/>
             </MudExpansionPanel>
-            <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <Nivel Model="Model.Niveles"/>
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="Centros Operativos" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <CentroOperativo Model="Model.CentrosOperativos"/>
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="PNC" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <PNC Model="Model.Pncs"/>
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="Excepciones" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <Excepcion Model="Model.Excepciones"/>
-            </MudExpansionPanel>
+            @if (Model.Compania.IDCompania>0)
+            {
+                <MudExpansionPanel Text="Excepciones" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                    <Excepcion Model="Model.Excepciones" IdCompania="Model.Compania.IDCompania"/>
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="Centros Operativos" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                    <CentroOperativo Model="Model.CentrosOperativos"/>
+                </MudExpansionPanel>
+            }
+
+            @if (Model.CentrosOperativos.Count > 0)
+            {
+                <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                    <Nivel Model="Model.Niveles" Centros="Model.CentrosOperativos.Where(x=>x.Estado == true).ToList()"/>
+                </MudExpansionPanel>
+                <MudExpansionPanel Text="PNC" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                    <PNC Model="Model.Pncs" Centros="Model.CentrosOperativos.Where(x=>x.Estado == true).ToList()"/>
+                </MudExpansionPanel>
+            }  
         }
     </MudPaper>
 </MudContainer>

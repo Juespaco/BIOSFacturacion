@@ -1,4 +1,9 @@
-﻿<MudPaper Class="p-4">
+﻿@using GrupoBIOS.Presentation.WebUI.Service.Nivel
+@using System.ComponentModel.DataAnnotations
+@inject INivelService NivelService;
+@inject SnackBarService snackBarService
+@inject IAuthService AuthService
+<MudPaper Class="p-4">
     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
 
     <EditForm Model="Model">
@@ -14,7 +19,15 @@
                 <MudTh>PNC Cobro</MudTh>
             </HeaderContent>
             <RowTemplate Context="item">
-                <MudTd><MudNumericField T="int" @bind-Value="item.NivelCentroOperativo" Immediate="true" /></MudTd>
+                <MudTd>
+                    <MudSelect T="int" @bind-Value="item.NivelCentroOperativo" Dense="true">
+                        <MudSelectItem T="int" Value="0" Disabled>Seleccione</MudSelectItem>
+                        @foreach (var centro in Centros)
+                        {
+                            <MudSelectItem T="int" Value="centro.IDCentroOperativo">@centro.NombreCO</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudTd>
                 <MudTd><MudTextField T="string" @bind-Value="item.NivelNombre" MaxLength="510" /></MudTd>
                 <MudTd><MudNumericField T="int" @bind-Value="item.NivelDiasGracia" /></MudTd>
                 <MudTd><MudNumericField T="int" @bind-Value="item.NivelDiasCobertura" /></MudTd>
@@ -34,20 +47,46 @@
 @code {
     [Parameter]
     public List<NivelDTO> Model { get; set; } = new();
+    [Parameter]
+    public List<CentroOperativoDTO> Centros { get; set; } = new();
+
 
     private void AgregarNuevo()
     {
-
+        var nueva = new NivelDTO();
+        // nueva.Estado = true;
+        Model.Add(nueva);
     }
 
-    private void EliminarNivel(NivelDTO nivel)
+    private async Task GuardarCambios()
     {
+        var isValid = true;
 
-    }
+        foreach (var excepcion in Model)
+        {
+            // excepcion.CreadoPor = await AuthService.GetUserNameAsync();
+            var validationContext = new ValidationContext(excepcion);
+            var results = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(excepcion, validationContext, results, true))
+            {
+                isValid = false;
+            }
+        }
 
-    private void GuardarCambios()
-    {
-        // Aquí va tu lógica para guardar en el backend
-        Console.WriteLine("Guardando niveles...");
+        if (!isValid)
+        {
+            snackBarService.ShowSnackBar("Por favor llenar todos los campos.", Severity.Warning, Defaults.Classes.Position.TopEnd);
+            return;
+        }
+
+        var result = await NivelService.Register(Model);
+        if (result == "OK")
+        {
+            snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+        }
+        else
+        {
+            snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
+        }
     }
 }

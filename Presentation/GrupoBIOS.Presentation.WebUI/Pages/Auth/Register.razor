@@ -75,7 +75,7 @@
                                     <MudSelectItem T="int" Value="0">Seleccione una opción</MudSelectItem>
                                     @foreach (var item in centroOperativo)
                                     {
-                                        <MudSelectItem T="int" Value="@item.IDCentroOperativo">@item.NombreCO</MudSelectItem>
+                                        <MudSelectItem T="int?" Value="@item.IDCentroOperativo">@item.NombreCO</MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>

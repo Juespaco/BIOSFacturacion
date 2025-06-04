@@ -1,9 +1,15 @@
-﻿<EditForm Model="Model" OnValidSubmit="GuardarCambios">
+﻿@using GrupoBIOS.Presentation.WebUI.Service.PNC
+@using System.ComponentModel.DataAnnotations
+@inject IPNCService PNCService;
+@inject SnackBarService snackBarService
+@inject IAuthService AuthService
+<EditForm Model="Model" OnValidSubmit="GuardarCambios">
     <MudPaper Class="p-4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AgregarNuevo">Nuevo</MudButton>
 
         <MudTable Items="Model" Bordered="true" Elevation="0">
             <HeaderContent>
+                <MudTh>CentroOperativo</MudTh>
                 <MudTh>Código</MudTh>
                 <MudTh>Nombre</MudTh>
                 <MudTh>Tarifa</MudTh>
@@ -11,6 +17,15 @@
                 <MudTh>Flete Regreso</MudTh>
             </HeaderContent>
             <RowTemplate Context="item">
+                <MudTd>
+                    <MudSelect T="int" @bind-Value="item.CoPnc" Dense="true">
+                        <MudSelectItem T="int" Value="0" Disabled>Seleccione</MudSelectItem>
+                        @foreach (var centro in Centros)
+                        {
+                            <MudSelectItem T="int" Value="centro.IDCentroOperativo">@centro.NombreCO</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudTd>
                 <MudTd>
                     <MudTextField @bind-Value="item.CodigoPnc" For="@(() => item.CodigoPnc)" MaxLength="8" Immediate="true" />
                     <ValidationMessage For="@(() => item.CodigoPnc)" />
@@ -45,19 +60,44 @@
     [Parameter]
     public List<PncDTO> Model { get; set; } = new();
 
+    [Parameter]
+    public List<CentroOperativoDTO> Centros { get; set; } = new();
+
     private void AgregarNuevo()
     {
-
+        var nueva = new PncDTO();
+        Model.Add(nueva);
     }
 
-    private void EliminarFila(PncDTO pnc)
+    private  async Task GuardarCambios()
     {
+        var isValid = true;
 
-    }
+        foreach (var excepcion in Model)
+        {
+            // excepcion.CreadoPor = await AuthService.GetUserNameAsync();
+            var validationContext = new ValidationContext(excepcion);
+            var results = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(excepcion, validationContext, results, true))
+            {
+                isValid = false;
+            }
+        }
 
-    private void GuardarCambios()
-    {
+        if (!isValid)
+        {
+            snackBarService.ShowSnackBar("Por favor llenar todos los campos.", Severity.Warning, Defaults.Classes.Position.TopEnd);
+            return;
+        }
 
-        Console.WriteLine("Formulario válido. Guardar en base de datos...");
+        var result = await PNCService.Register(Model);
+        if (result == "OK")
+        {
+            snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+        }
+        else
+        {
+            snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
+        }
     }
 }

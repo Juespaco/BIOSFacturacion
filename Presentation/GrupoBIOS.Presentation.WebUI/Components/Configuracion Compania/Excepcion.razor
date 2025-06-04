@@ -9,7 +9,6 @@
     <EditForm Model="Model">
         <MudTable Items="Model" Bordered="true" Elevation="0">
             <HeaderContent>
-                <MudTh>ID Compañía</MudTh>
                 <MudTh>Planta</MudTh>
                 <MudTh>NIT</MudTh>
                 <MudTh>Nombre Cliente</MudTh>
@@ -17,9 +16,6 @@
                 <MudTh>Acción</MudTh>
             </HeaderContent>
             <RowTemplate Context="item">
-                <MudTd>
-                    <MudNumericField T="int" @bind-Value="item.IdCompania" Immediate="true" />
-                </MudTd>
                 <MudTd>
                     <MudTextField T="string" @bind-Value="item.Planta" MaxLength="255" For="@(() => item.Planta)" />
                     <ValidationMessage For="@(() => item.Planta)" />
@@ -57,9 +53,13 @@
     [Parameter]
     public List<ExcepcionDTO> Model { get; set; } = new List<ExcepcionDTO>();
 
+    [Parameter]
+    public int IdCompania { get; set; } = 0;
     private void AgregarNuevo()
     {
         var nueva = new ExcepcionDTO();
+        nueva.Estado = true;
+        nueva.IdCompania = IdCompania;
         Model.Add(nueva);
     }
 

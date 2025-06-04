@@ -9,7 +9,7 @@ namespace GrupoBIOS.Application.DTOs
 {
     public class CentroOperativoDTO
     {
-        public int? IDCentroOperativo { get; set; }
+        public int IDCentroOperativo { get; set; }
         public int? IDCompania { get; set; }
         public int? IDSiesaCO { get; set; }
         public string? NombreCO { get; set; }
