@@ -116,11 +116,6 @@ namespace GrupoBIOS.InfraStructure.Repository
                     parameters.Add("@BodegaEspeciales", model.BodegaEspeciales);
                     parameters.Add("@CorreoEnvioReporte", model.CorreoEnvioReporte);
                     parameters.Add("@FechaInicialCorte", model.FechaInicialCorte);
-                    parameters.Add("@FechaPrimerCobro", model.FechaPrimerCobro);
-                    parameters.Add("@FechaSegundoCobro", model.FechaSegundoCobro);
-                    parameters.Add("@FechaCobroPNC", model.FechaCobroPNC);
-                    parameters.Add("@DefinicioPrimerCobro", model.DefinicioPrimerCobro);
-                    parameters.Add("@DefinicioSegundoCobro", model.DefinicioSegundoCobro);
                     parameters.Add("@CobroPNC", model.CobroPNC);
                     //parameters.Add("@Estado", model.Estado);
                     parameters.Add("@CreadoPor", model.CreadoPor);
@@ -155,11 +150,6 @@ namespace GrupoBIOS.InfraStructure.Repository
                     parameters.Add("@BodegaEspeciales", model.BodegaEspeciales);
                     parameters.Add("@CorreoEnvioReporte", model.CorreoEnvioReporte);
                     parameters.Add("@FechaInicialCorte", model.FechaInicialCorte);
-                    parameters.Add("@FechaPrimerCobro", model.FechaPrimerCobro);
-                    parameters.Add("@FechaSegundoCobro", model.FechaSegundoCobro);
-                    parameters.Add("@FechaCobroPNC", model.FechaCobroPNC);
-                    parameters.Add("@DefinicioPrimerCobro", model.DefinicioPrimerCobro);
-                    parameters.Add("@DefinicioSegundoCobro", model.DefinicioSegundoCobro);
                     parameters.Add("@CobroPNC", model.CobroPNC);
                     //parameters.Add("@Estado", model.Estado);
                     parameters.Add("@CreadoPor", model.CreadoPor);
@@ -173,6 +163,54 @@ namespace GrupoBIOS.InfraStructure.Repository
             {
                 throw;
             }
+        }
+
+        public async Task<string> CrearActualizarCentroOperativoAsync(IEnumerable<CentroOperativo> centros)
+        {
+            using var connection = _connectionFactory.GetConnection;
+
+            var table = new DataTable();
+            table.Columns.Add("IDCentroOperativo", typeof(int));
+            table.Columns.Add("IDCompania", typeof(int));
+            table.Columns.Add("IDSiesaCO", typeof(int));
+            table.Columns.Add("NombreCO", typeof(string));
+            table.Columns.Add("ReferenciadeCobro", typeof(string));
+            table.Columns.Add("PrefijodeFacturacion", typeof(string));
+            table.Columns.Add("MotivodeFacturacion", typeof(string));
+            table.Columns.Add("BodegaEspeciales", typeof(string));
+            table.Columns.Add("CorreoEnvioReporte", typeof(string));
+            table.Columns.Add("FechaInicialCorte", typeof(DateTime));
+            table.Columns.Add("CobroPNC", typeof(int));
+            table.Columns.Add("Estado", typeof(bool));
+            table.Columns.Add("FechadeCreacion", typeof(DateTime));
+            table.Columns.Add("CreadoPor", typeof(string));
+
+            foreach (var c in centros)
+            {
+                table.Rows.Add(
+                    c.IDCentroOperativo,
+                    c.IDCompania,
+                    c.IDSiesaCO,
+                    c.NombreCO,
+                    c.ReferenciadeCobro,
+                    c.PrefijodeFacturacion,
+                    c.MotivodeFacturacion,
+                    c.BodegaEspeciales,
+                    c.CorreoEnvioReporte,
+                    c.FechaInicialCorte,
+                    c.CobroPNC,
+                    c.Estado,
+                    c.FechadeCreacion,
+                    c.CreadoPor
+                );
+            }
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@CentroOperativos", table.AsTableValuedParameter("CentroOperativoType"));
+
+            await connection.ExecuteAsync("sp_CentroOperativo_CrearActualizar", parameters, commandType: CommandType.StoredProcedure);
+
+            return "OK";
         }
     }
 }

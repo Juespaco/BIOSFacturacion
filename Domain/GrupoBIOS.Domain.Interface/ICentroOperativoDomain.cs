@@ -10,5 +10,6 @@ namespace GrupoBIOS.Domain.Interface
     public interface ICentroOperativoDomain : IDomain<CentroOperativo>
     {
         Task<bool> DesactivarCentroOperativo(int IDCompania);
+        Task<string> CrearActualizarCentroOperativoAsync(IEnumerable<CentroOperativo> niveles);
     }
 }

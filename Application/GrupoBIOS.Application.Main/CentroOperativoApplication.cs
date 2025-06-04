@@ -171,5 +171,29 @@ namespace GrupoBIOS.Application.Main
 
             return response;
         }
+
+        public async Task<Response<string>> CrearActualizarCentroOperativoAsync(IEnumerable<CentroOperativoDTO> centroOperativoDto)
+        {
+            var response = new Response<string>();
+
+            try
+            {
+                var entities = _mapper.Map<IEnumerable<CentroOperativo>>(centroOperativoDto);
+                var result = await _Domain.CrearActualizarCentroOperativoAsync(entities);
+
+                response.Data = result;
+                response.IsSuccess = result == "OK";
+                response.Message = result == "OK" ? "Registro exitoso!" : result;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Data = string.Empty;
+                response.Message = ex.Message;
+                _logger.LogError(ex.Message);
+            }
+
+            return response;
+        }
     }
 }

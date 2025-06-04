@@ -190,5 +190,31 @@ namespace GrupoBIOS.Services.API.Controllers
             }
         }
 
+        [HttpPost("CrearActualizarCentroOperativoAsync")]
+        public async Task<IActionResult> CrearActualizarCentroOperativoAsync([FromBody] List<CentroOperativoDTO> centros)
+        {
+            var response = new Response<string>();
+
+            try
+            {
+                if (centros == null || !centros.Any())
+                    return BadRequest("La lista de Centros Operativos está vacía.");
+
+                response = await _Application.CrearActualizarCentroOperativoAsync(centros);
+
+                return response.IsSuccess ? Ok(response) : BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                response.Data = string.Empty;
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+
+                _logger.LogError(ex.Message);
+
+                return BadRequest(response);
+            }
+        }
+
     }
 }

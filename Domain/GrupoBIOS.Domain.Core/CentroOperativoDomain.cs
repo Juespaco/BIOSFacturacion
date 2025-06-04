@@ -47,5 +47,10 @@ namespace GrupoBIOS.Domain.Core
         {
             return await _unityOfWork.CentroOperativo.UpdateAsync(model);
         }
+
+        public async Task<string> CrearActualizarCentroOperativoAsync(IEnumerable<CentroOperativo> model)
+        {
+            return await _unityOfWork.CentroOperativo.CrearActualizarCentroOperativoAsync(model);
+        }
     }
 }
