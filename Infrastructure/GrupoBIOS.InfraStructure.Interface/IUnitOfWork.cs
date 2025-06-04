@@ -11,6 +11,7 @@ namespace GrupoBIOS.InfraStructure.Interface
         ICentroOperativoRepository CentroOperativo { get; }  // Mantenemos la propiedad específica                
         IExcepcionRepository Excepcion { get; }
         IPncRepository Pnc { get; }
+        INivelRepository Nivel { get; }
         TRepository GetRepository<TRepository>() where TRepository : class;  // Método genérico
 
     }

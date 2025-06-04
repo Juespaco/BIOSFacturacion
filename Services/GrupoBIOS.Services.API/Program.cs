@@ -133,6 +133,10 @@ builder.Services.AddScoped<IExcepcionApplication, ExcepcionApplication>();
 builder.Services.AddScoped<IPncRepository, PncRepository>();
 builder.Services.AddScoped<IPncDomain, PncDomain>();
 builder.Services.AddScoped<IPncApplication, PncApplication>();
+builder.Services.AddScoped<INivelRepository, NivelRepository>();
+builder.Services.AddScoped<INivelDomain, NivelDomain>();
+builder.Services.AddScoped<INivelApplication, NivelApplication>();
+
 
 // Registrar UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

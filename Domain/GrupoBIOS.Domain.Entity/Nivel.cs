@@ -13,7 +13,7 @@ namespace GrupoBIOS.Domain.Entity
     {
         public class Nivel
         {
-            public int IDNivel { get; set; }
+            public int? IDNivel { get; set; }
             public int NivelCentroOperativo { get; set; }
             public string NivelNombre { get; set; } = null!;
             public int NivelDiasGracia { get; set; }

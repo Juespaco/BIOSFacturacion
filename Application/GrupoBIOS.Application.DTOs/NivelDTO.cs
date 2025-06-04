@@ -10,7 +10,7 @@ namespace GrupoBIOS.Application.DTOs
 
     public class NivelDTO
     {
-        public int IDNivel { get; set; }
+        public int? IDNivel { get; set; }
 
         [Required(ErrorMessage = "El campo NivelCentroOperativo es requerido")]
         public int NivelCentroOperativo { get; set; }
