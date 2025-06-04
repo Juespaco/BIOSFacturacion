@@ -5,6 +5,7 @@ using GrupoBIOS.Presentation.WebUI.Provider;
 using GrupoBIOS.Presentation.WebUI.Service;
 using GrupoBIOS.Presentation.WebUI.Service.Auth;
 using GrupoBIOS.Presentation.WebUI.Service.Compania;
+using GrupoBIOS.Presentation.WebUI.Service.Excepcion;
 using GrupoBIOS.Presentation.WebUI.Service.ShowDialog;
 using GrupoBIOS.Presentation.WebUI.Service.Siesa;
 using GrupoBIOS.Transversal.Utils;
@@ -36,6 +37,7 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IExcepcionService, ExcepcionService>();
 builder.Services.AddScoped<ISiesaService, SiesaService>();
 
 builder.Services.AddScoped<SweetAlertService>();

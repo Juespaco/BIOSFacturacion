@@ -31,7 +31,7 @@ namespace GrupoBIOS.Application.DTOs
         public bool Estado { get; set; }
 
         [Required(ErrorMessage = "El campo 'CreadoPor' es requerido")]
-        public string CreadoPor { get; set; }
+        public string? CreadoPor { get; set; }
     }
 
 

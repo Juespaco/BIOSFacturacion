@@ -1,4 +1,9 @@
-﻿<MudPaper Class="p-4">
+﻿@using GrupoBIOS.Presentation.WebUI.Service.Excepcion
+@using System.ComponentModel.DataAnnotations
+@inject IExcepcionService ExcepcionService;
+@inject SnackBarService snackBarService
+@inject IAuthService AuthService
+<MudPaper Class="p-4">
     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
 
     <EditForm Model="Model">
@@ -12,10 +17,22 @@
                 <MudTh>Acción</MudTh>
             </HeaderContent>
             <RowTemplate Context="item">
-                <MudTd><MudNumericField T="int" @bind-Value="item.IdCompania" Immediate="true" /></MudTd>
-                <MudTd><MudTextField T="string" @bind-Value="item.Planta" MaxLength="255" /></MudTd>
-                <MudTd><MudTextField T="string" @bind-Value="item.Nit" MaxLength="50" /></MudTd>
-                <MudTd><MudTextField T="string" @bind-Value="item.NombreCliente" MaxLength="255" /></MudTd>
+                <MudTd>
+                    <MudNumericField T="int" @bind-Value="item.IdCompania" Immediate="true" />
+                </MudTd>
+                <MudTd>
+                    <MudTextField T="string" @bind-Value="item.Planta" MaxLength="255" For="@(() => item.Planta)" />
+                    <ValidationMessage For="@(() => item.Planta)" />
+                </MudTd>
+                <MudTd>
+                    <MudTextField T="string" @bind-Value="item.Nit" MaxLength="50" For="@(() => item.Nit)" />
+                    <ValidationMessage For="@(() => item.Nit)" />
+                </MudTd>
+                <MudTd>
+                    <MudTextField T="string" @bind-Value="item.NombreCliente" MaxLength="255" For="@(() => item.NombreCliente)" />
+                    <ValidationMessage For="@(() => item.NombreCliente)" />
+                </MudTd>
+
                 <MudTd>
                     <MudChip T="string" Color="@(item.Estado ? Color.Success : Color.Default)">
                         @(item.Estado ? "Activo" : "Inactivo")
@@ -33,6 +50,7 @@
     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GuardarCambios" Class="mt-4">
         Guardar Cambios
     </MudButton>
+
 </MudPaper>
 
 @code {
@@ -41,7 +59,8 @@
 
     private void AgregarNuevo()
     {
-
+        var nueva = new ExcepcionDTO();
+        Model.Add(nueva);
     }
 
     private void CambiarEstado(ExcepcionDTO excepcion)
@@ -49,14 +68,36 @@
         excepcion.Estado = !excepcion.Estado;
     }
 
-    private void EliminarExcepcion(ExcepcionDTO excepcion)
-    {
 
-    }
-
-    private void GuardarCambios()
+    private async Task GuardarCambios()
     {
-        // Lógica para guardar en el backend
-        Console.WriteLine("Guardando excepciones...");
+        var isValid = true;
+        
+        foreach (var excepcion in Model)
+        {
+            excepcion.CreadoPor = await AuthService.GetUserNameAsync();
+            var validationContext = new ValidationContext(excepcion);
+            var results = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(excepcion, validationContext, results, true))
+            {
+                isValid = false;
+            }
+        }
+
+        if (!isValid)
+        {
+            snackBarService.ShowSnackBar("Por favor llenar todos los campos.", Severity.Warning, Defaults.Classes.Position.TopEnd);
+            return;
+        }
+
+        var result = await ExcepcionService.Register(Model);
+        if (result == "OK")
+        {
+            snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+        }
+        else
+        {
+            snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
+        }
     }
 }
