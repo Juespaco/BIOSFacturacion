@@ -1,8 +1,8 @@
-﻿<EditForm Model="_pncs" OnValidSubmit="GuardarCambios">
+﻿<EditForm Model="Model" OnValidSubmit="GuardarCambios">
     <MudPaper Class="p-4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AgregarNuevo">Nuevo</MudButton>
 
-        <MudTable Items="_pncs" Bordered="true" Elevation="0">
+        <MudTable Items="Model" Bordered="true" Elevation="0">
             <HeaderContent>
                 <MudTh>Código</MudTh>
                 <MudTh>Nombre</MudTh>
@@ -42,34 +42,22 @@
 </EditForm>
 
 @code {
-
-   public List<PncDTO> _pncs = new()
-    {
-        new PncDTO
-        {
-            IDPnc = 1,
-            CoPnc = 101,
-            CodigoPnc = "0001",
-            NombrePnc = "PNC Demo",
-            TarifaPnc = 1000,
-            FleteidaPnc = 150.5,
-            FleteregPnc = 120.3
-        }
-    };
+    [Parameter]
+    public List<PncDTO> Model { get; set; } = new();
 
     private void AgregarNuevo()
     {
-        _pncs.Add(new PncDTO());
+
     }
 
     private void EliminarFila(PncDTO pnc)
     {
-        _pncs.Remove(pnc);
+
     }
 
     private void GuardarCambios()
     {
-        // Aquí iría la lógica de guardado o llamado a servicio
+
         Console.WriteLine("Formulario válido. Guardar en base de datos...");
     }
 }

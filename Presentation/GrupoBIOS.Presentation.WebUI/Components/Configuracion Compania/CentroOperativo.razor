@@ -1,8 +1,8 @@
 ﻿<MudPaper Class="p-4">
     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
 
-    <EditForm Model="_centrosOperativos">
-        <MudTable Items="_centrosOperativos" Bordered="true" Elevation="0">
+    <EditForm Model="Model">
+        <MudTable Items="Model" Bordered="true" Elevation="0">
             <HeaderContent>
                 <MudTh>ID Siesa</MudTh>
                 <MudTh>Nombre</MudTh>
@@ -46,15 +46,12 @@
 </MudPaper>
 
 @code {
-    private List<CentroOperativoDTO> _centrosOperativos = new();
+    [Parameter]
+    public List<CentroOperativoDTO> Model { get; set; } = new List<CentroOperativoDTO>();
 
     private void AgregarNuevo()
     {
-        _centrosOperativos.Add(new CentroOperativoDTO
-            {
-                FechadeCreacion = DateTime.Now,
-                CreadoPor = "usuario_actual" // reemplazar con usuario real
-            });
+        
     }
 
     private void CambiarEstado(CentroOperativoDTO centro)

@@ -1,8 +1,8 @@
 ﻿<MudPaper Class="p-4">
     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
 
-    <EditForm Model="_niveles">
-        <MudTable Items="_niveles" Bordered="true" Elevation="0">
+    <EditForm Model="Model">
+        <MudTable Items="Model" Bordered="true" Elevation="0">
             <HeaderContent>
                 <MudTh>Centro Operativo</MudTh>
                 <MudTh>Nombre Nivel</MudTh>
@@ -32,16 +32,17 @@
 </MudPaper>
 
 @code {
-    private List<NivelDTO> _niveles = new();
+    [Parameter]
+    public List<NivelDTO> Model { get; set; } = new();
 
     private void AgregarNuevo()
     {
-        _niveles.Add(new NivelDTO());
+
     }
 
     private void EliminarNivel(NivelDTO nivel)
     {
-        _niveles.Remove(nivel);
+
     }
 
     private void GuardarCambios()

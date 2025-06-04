@@ -170,8 +170,8 @@ namespace GrupoBIOS.InfraStructure.Repository
             {
                 using var multi = await connection.QueryMultipleAsync("sp_Compania_ObtenerConfiguracionPorId", parameters, commandType: CommandType.StoredProcedure);
 
-                result.Compania = await multi.ReadSingleOrDefaultAsync<Compania>();
-                result.Notificaciones = (await multi.ReadAsync<Notificacion>()).ToList();
+                result.Compania = await multi.ReadSingleOrDefaultAsync<Compania>() ?? new Compania();
+                result.Notificacion = await multi.ReadSingleOrDefaultAsync<Notificacion>()?? new Notificacion();
                 result.Niveles = (await multi.ReadAsync<Nivel>()).ToList();
                 result.CentrosOperativos = (await multi.ReadAsync<CentroOperativo>()).ToList();
                 result.Pncs = (await multi.ReadAsync<Pnc>()).ToList();

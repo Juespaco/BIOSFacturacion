@@ -34,7 +34,7 @@
                 ErrorText="Debe seleccionar la compañía"
                 ValueChanged="@(async (value) => {
                             IDSiesa = value;
-                            await LoadComapnyByID(value);
+                            await LoadCompanyConfigurationByID(value);
                 })">
                     <MudSelectItem T="int"
                     Value="0">Seleccione una opción</MudSelectItem>
@@ -59,31 +59,28 @@
                 </MudItem>
             </MudGrid>
             <MudExpansionPanel Text="Companía" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <Compania @ref="companyForm" Model="Model" />
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <Nivel/>
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="Centros Operativos" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <CentroOperativo/>
-            </MudExpansionPanel>
-            <MudExpansionPanel Text="PNC" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <PNC/>
+                <Compania @ref="companyForm" Model="Model.Compania" />
             </MudExpansionPanel>
             <MudExpansionPanel Text="Configuración E-mail" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <Notificacion/>
+                <Notificacion Model="Model.Notificacion"/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <Nivel Model="Model.Niveles"/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Centros Operativos" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <CentroOperativo Model="Model.CentrosOperativos"/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="PNC" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <PNC Model="Model.Pncs"/>
             </MudExpansionPanel>
             <MudExpansionPanel Text="Excepciones" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
-                <Excepcion/>
+                <Excepcion Model="Model.Excepciones"/>
             </MudExpansionPanel>
         }
     </MudPaper>
 </MudContainer>
 
 @code {
-
-
-
     private bool _isFormValid;
     private bool _shouldValidate = false;
     private bool _visible;
@@ -91,8 +88,7 @@
     private string? NombreUsuario { get; set; }
 
     private MudForm _form;
-    //CompaniaDTO? Model = null;
-    private CompaniaDTO Model { get; set; } = new CompaniaDTO();
+    private ConfiguracionCompaniaDTO Model { get; set; } = new ConfiguracionCompaniaDTO();
     private Compania companyForm;
     private bool isSaving = false;
     private bool _formIsValid = false;
@@ -108,8 +104,6 @@
     private IEnumerable<CompaniaSiesaResponseDTO> companias = new List<CompaniaSiesaResponseDTO>();
     private int IDSiesa = 0;
 
-    //IEnumerable<CompaniaDTO>? companias = [];
-
     private readonly DialogOptions _dialogOptions = new()
         {
             FullWidth = true,
@@ -120,7 +114,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model.IDCompania = 0;        
+        Model.Compania.IDCompania = 0;        
         NombreUsuario = await AuthService.GetUserNameAsync();
         LoadingService.Show();
         await GetCompanias();
@@ -128,58 +122,6 @@
         LoadingService.Hide();
     }
 
-    private async Task OnFieldChanged()
-    {
-        if (_form != null)
-        {
-            await _form.Validate();
-            StateHasChanged(); // Actualiza la UI para reflejar el estado del botón
-        }
-    }
-
-    private void OpenDialog()
-    {
-        _visible = true;
-        Model = null;
-    }
-
-    private async Task EditCompania(int IDCompania)
-    {
-        LoadingService.Show();
-        await LoadComapnyByID(IDCompania);
-        _visible = true;
-        LoadingService.Hide();
-    }
-
-    private async Task DeactivateCompania(int IDUsuario)
-    {
-        bool? result = await dialogService.ShowDangerConfirmationAsync(
-            title: "Confirmar desactivar",
-            message: "¿Está seguro que desea desactivar este registro?",
-            confirmText: "Sí, Desactivar",
-            cancelText: "Cancelar");
-
-        if (result == true)
-        {
-
-            //
-            LoadingService.Show();
-            var resp = await DesactivarCompania(IDUsuario);
-            LoadingService.Hide();
-            if (resp)
-            {
-                LoadingService.Show();
-                await LoadCompanias();
-                LoadingService.Hide();
-                snackBarService.ShowSnackBar("El usuario se ha desactivado correctamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
-            }
-            else
-            {
-                snackBarService.ShowSnackBar("El usuario no se ha podido desactivar, ha ocurrido un error inesperado", Severity.Error, Defaults.Classes.Position.TopEnd);
-            }
-
-        }
-    }
 
     // Método para verificar si el formulario es válido
     private bool IsFormValid()
@@ -187,20 +129,20 @@
 
 
         // Verifica que todos los campos requeridos tengan valores
-        return !string.IsNullOrWhiteSpace(Model.NombreCompania) &&
-               Model.IDSiesa.HasValue && Model.IDSiesa > 0 &&
-               !string.IsNullOrWhiteSpace(Model.NombreBD) &&
-               !string.IsNullOrWhiteSpace(Model.NombreConexionBD) &&
-               !string.IsNullOrWhiteSpace(Model.UrlWebServiceSiesa) &&
-               !string.IsNullOrWhiteSpace(Model.UsuarioWebService) &&
-               !string.IsNullOrWhiteSpace(Model.ClaveWebService);
+        return !string.IsNullOrWhiteSpace(Model.Compania.NombreCompania) &&
+               Model.Compania.IDSiesa.HasValue && Model.Compania.IDSiesa > 0 &&
+               !string.IsNullOrWhiteSpace(Model.Compania.NombreBD) &&
+               !string.IsNullOrWhiteSpace(Model.Compania.NombreConexionBD) &&
+               !string.IsNullOrWhiteSpace(Model.Compania.UrlWebServiceSiesa) &&
+               !string.IsNullOrWhiteSpace(Model.Compania.UsuarioWebService) &&
+               !string.IsNullOrWhiteSpace(Model.Compania.ClaveWebService);
     }
 
-    private async Task LoadComapnyByID(int IDSiesa)
+    private async Task LoadCompanyConfigurationByID(int IDSiesa)
     {
         try
         {
-            var resp = await compService.GetCompaniaId(IDSiesa);
+            var resp = await compService.GetConfiguracionCompaniaId(IDSiesa);
 
             if (resp?.Data != null)
             {
@@ -210,7 +152,7 @@
             }
             else
             {
-                Model = new CompaniaDTO { IDSiesa = IDSiesa, IDCompania = 0 };                
+                Model = new ConfiguracionCompaniaDTO();                
                 await Task.Delay(100); // Pequeño delay para asegurar renderizado
                 StateHasChanged();
             }
@@ -221,28 +163,6 @@
         }
     }
 
-    private async Task<bool> DesactivarCompania(int IDCompania)
-    {
-        isLoading = true;
-        bool resp = false;
-        try
-        {
-            var respData = await compService.DesactivarCompania(IDCompania);
-            resp = respData.Data;
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Error al cargar compañías: {ex.Message}";
-            return false;
-        }
-        finally
-        {
-            isLoading = false;
-            StateHasChanged();
-        }
-
-        return resp;
-    }
 
     async Task GetCompanias()
     {
@@ -257,136 +177,38 @@
         }
     }
 
-    private async Task LoadCompanias()
-    {
-        isLoading = true;
-
-        try
-        {
-            var resp = await compService.GetListCompanias();
-            //companias = resp.Data;
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Error al cargar usuarios: {ex.Message}";
-        }
-        finally
-        {
-            isLoading = false;
-            StateHasChanged();
-        }
-    }
-
-    private void HandleValidityChange(bool isValid)
-    {
-        _isFormValid = isValid;
-        StateHasChanged(); // Esto fuerza la actualización de la UI
-    }
 
     private void CloseDialog()
     {
         _visible = false;
     }
 
-    private Func<CompaniaDTO, bool> _quickFilter => x =>
-    {
-        if (string.IsNullOrWhiteSpace(_searchString))
-            return true;
-
-        if (x.IDSiesa.ToString()!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.NombreBD!.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (x.NombreCompania!.Contains(_searchString))
-            return true;
-
-        if (x.UrlWebServiceSiesa!.ToString()!.Contains(_searchString))
-            return true;
-        return false;
-    };
-
-    void SelectedItemsChanged(HashSet<CompaniaDTO> items)
-    {
-        _events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
-    }
-
-    // Método para resetear el formulario
-    private async Task ResetForm()
-    {
-        // Método correcto para resetear MudForm
-        await _form.ResetAsync();
-
-        // Reiniciar el modelo
-        Model = new CompaniaDTO();
-        IDSiesa = 0;
-
-        // Forzar actualización de la UI
-        StateHasChanged();
-    }
-
-    private void Cancelar()
-    {
-        //Navigation.NavigateTo("/companias"); // Ajusta la ruta según tu aplicación
-    }
-
     async Task<string> HandleRegister()
     {
         showValidation = true;
         string response = string.Empty;
-        Model = companyForm.GetCompanyData();
+        Model.Compania = companyForm.GetCompanyData();
 
         if (!IsFormValid())
         {
             snackBarService.ShowSnackBar("Se deben llenar todos los campos requeridos.", Severity.Error, Defaults.Classes.Position.TopEnd);
             return response;
         }
-        if (Model.IDCompania == 0)
-        {
-            response = await HandleInsert();
 
-            if (response == "OK")
-            {
-                CloseDialog();
-                snackBarService.ShowSnackBar("El registro se ha guardado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
-                showValidation = false;
-            }
-            else
-            {
-                showValidation = false;
-                snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
-            }
+        response = await HandleUpdate();
+        if (response == "OK")
+        {
+            CloseDialog();
+            snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
+            showValidation = false;
         }
         else
         {
-            response = await HandleUpdate();
-            if (response == "OK")
-            {
-                CloseDialog();
-                snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
-                showValidation = false;
-            }
-            else
-            {
-                showValidation = false;
-                snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
-            }
+            showValidation = false;
+            snackBarService.ShowSnackBar("Ha ocurrido un error al registrar la compañía.", Severity.Error, Defaults.Classes.Position.TopEnd);
         }
 
         return response;
-    }
-
-    public async Task<string> HandleInsert()
-    {
-        LoadingService.Show();
-
-        showValidation = true;
-        Model.IDSiesa = IDSiesa;
-        var result = await compService.Register(Model);
-        LoadingService.Hide();
-
-        return result;
     }
 
     public async Task<string> HandleUpdate()
@@ -395,14 +217,11 @@
 
         showValidation = true;
 
+        Model.Compania.CreadoPor = NombreUsuario!;
+        Model.Compania.Estado = true;
+        Model.Compania.IDSiesa = IDSiesa;
 
-
-        
-        Model.CreadoPor = NombreUsuario!;
-        Model.Estado = true;
-        Model.IDSiesa = IDSiesa;
-
-        var result = await compService.UpdateCompaniaAsync(Model);
+        var result = await compService.UpdateCompaniaAsync(Model.Compania);
         LoadingService.Hide();
 
         return result!;

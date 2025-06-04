@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GrupoBIOS.Application.DTOs
+﻿namespace GrupoBIOS.Application.DTOs
 {
     public class ConfiguracionCompaniaDTO
     {
-        public CompaniaDTO? Compania { get; set; }
-        public List<NotificacionDTO>? Notificaciones { get; set; }
-        public List<NivelDTO>? Niveles { get; set; }
-        public List<CentroOperativoDTO>? CentrosOperativos { get; set; }
-        public List<PncDTO>? Pncs { get; set; }
-        public List<ExcepcionDTO>? Excepciones { get; set; }
+        public CompaniaDTO? Compania { get; set; } = new CompaniaDTO();
+        public NotificacionDTO? Notificacion { get; set; } = new NotificacionDTO();
+        public List<NivelDTO>? Niveles { get; set; } = new List<NivelDTO>();
+        public List<CentroOperativoDTO>? CentrosOperativos { get; set; } = new List<CentroOperativoDTO>();
+        public List<PncDTO>? Pncs { get; set; } = new List<PncDTO>();
+        public List<ExcepcionDTO>? Excepciones { get; set; } = new List<ExcepcionDTO>();
     }
 }

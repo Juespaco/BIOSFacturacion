@@ -10,7 +10,7 @@ namespace GrupoBIOS.Domain.Entity
     public class ConfiguracionCompania
     {
         public Compania? Compania { get; set; }
-        public List<Notificacion>? Notificaciones { get; set; }
+        public Notificacion? Notificacion { get; set; }
         public List<Nivel>? Niveles { get; set; }
         public List<CentroOperativo>? CentrosOperativos { get; set; }
         public List<Pnc>? Pncs { get; set; }

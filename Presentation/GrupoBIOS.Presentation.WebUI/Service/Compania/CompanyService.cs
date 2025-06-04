@@ -86,6 +86,37 @@ namespace GrupoBIOS.Presentation.WebUI.Service.Compania
             return respData;
         }
 
+        public async Task<Response<ConfiguracionCompaniaDTO>> GetConfiguracionCompaniaId(int IDCompania)
+        {
+            Response<ConfiguracionCompaniaDTO> respData = new Response<ConfiguracionCompaniaDTO>();
+
+            try
+            {
+                var response = await _httpClient.GetAsync($"api/Compania/ObtenerConfiguracionCompaniaPorIDSiesa?IDSiesa={IDCompania}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    respData = await response.Content.ReadFromJsonAsync<Response<ConfiguracionCompaniaDTO>?>()
+                                ?? new Response<ConfiguracionCompaniaDTO>
+                                {
+                                    IsSuccess = false,
+                                    Message = "La respuesta no contenía datos válidos"
+                                };
+                }
+                else
+                {
+                    respData.IsSuccess = false;
+                    respData.Message = $"Error: {response.StatusCode}";
+                }
+            }
+            catch (Exception ex)
+            {
+                respData.IsSuccess = false;
+                respData.Message = $"Error: {ex.Message}";
+            }
+
+            return respData;
+        }
         public async Task<Response<IEnumerable<CompaniaDTO>>> GetListCompanias()
         {
             Response<IEnumerable<CompaniaDTO>> respData = new Response<IEnumerable<CompaniaDTO>>();

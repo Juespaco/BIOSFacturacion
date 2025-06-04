@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_Compania_ObtenerConfiguracionPorId]
+CREATE or ALTER PROCEDURE [dbo].[sp_Compania_ObtenerConfiguracionPorId]
 						
     @IDSiesa INT
 AS
@@ -22,7 +22,7 @@ BEGIN
         FROM dbo.Compania
         WHERE IDSiesa = @IDSiesa;
 
-        SELECT 
+        SELECT TOP 1
             IdNotificacion,
             n.IdCompania,
             Puerto,
