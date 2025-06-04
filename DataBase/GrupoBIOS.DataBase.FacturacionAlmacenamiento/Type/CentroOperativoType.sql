@@ -2,16 +2,15 @@ CREATE TYPE CentroOperativoType AS TABLE
 (
     IDCentroOperativo INT,
     IDCompania INT,
-    IDSiesaCO INT,
-    NombreCO NVARCHAR(250),
-    ReferenciadeCobro NVARCHAR(250),
-    PrefijodeFacturacion NVARCHAR(50),
-    MotivodeFacturacion NVARCHAR(500),
-    BodegaEspeciales NVARCHAR(250),
-    CorreoEnvioReporte NVARCHAR(250),
+    IDSiesaCO NVARCHAR(20),
+    NombreCO NVARCHAR(500),
+    ReferenciadeCobro NVARCHAR(500),
+    PrefijodeFacturacion NVARCHAR(100),
+    MotivodeFacturacion NVARCHAR(1000),
+    BodegaEspeciales NVARCHAR(500),
+    CorreoEnvioReporte NVARCHAR(500),
     FechaInicialCorte DATETIME,
     CobroPNC INT,
     Estado BIT,
-    FechadeCreacion DATETIME,
-    CreadoPor NVARCHAR(150)
+    CreadoPor NVARCHAR(300)
 );

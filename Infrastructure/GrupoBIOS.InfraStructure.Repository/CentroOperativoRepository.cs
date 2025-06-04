@@ -172,7 +172,7 @@ namespace GrupoBIOS.InfraStructure.Repository
             var table = new DataTable();
             table.Columns.Add("IDCentroOperativo", typeof(int));
             table.Columns.Add("IDCompania", typeof(int));
-            table.Columns.Add("IDSiesaCO", typeof(int));
+            table.Columns.Add("IDSiesaCO", typeof(string));
             table.Columns.Add("NombreCO", typeof(string));
             table.Columns.Add("ReferenciadeCobro", typeof(string));
             table.Columns.Add("PrefijodeFacturacion", typeof(string));
@@ -182,7 +182,6 @@ namespace GrupoBIOS.InfraStructure.Repository
             table.Columns.Add("FechaInicialCorte", typeof(DateTime));
             table.Columns.Add("CobroPNC", typeof(int));
             table.Columns.Add("Estado", typeof(bool));
-            table.Columns.Add("FechadeCreacion", typeof(DateTime));
             table.Columns.Add("CreadoPor", typeof(string));
 
             foreach (var c in centros)
@@ -200,7 +199,6 @@ namespace GrupoBIOS.InfraStructure.Repository
                     c.FechaInicialCorte,
                     c.CobroPNC,
                     c.Estado,
-                    c.FechadeCreacion,
                     c.CreadoPor
                 );
             }

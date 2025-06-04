@@ -22,7 +22,6 @@ namespace GrupoBIOS.Domain.Entity
         public DateTime? FechaInicialCorte { get; set; }
         public int? CobroPNC { get; set; }
         public bool? Estado { get; set; }
-        public DateTime FechadeCreacion { get; set; }
 
         [StringLength(150)]
         public string CreadoPor { get; set; } = null!;
