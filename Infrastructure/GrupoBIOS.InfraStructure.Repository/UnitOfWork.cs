@@ -19,6 +19,7 @@ namespace GrupoBIOS.InfraStructure.Repository
         public ICompaniaRepository Compania => GetRepository<ICompaniaRepository>();
         public ICentroOperativoRepository CentroOperativo => GetRepository<ICentroOperativoRepository>();
         public IExcepcionRepository Excepcion => GetRepository<IExcepcionRepository>();
+        public IPncRepository Pnc => GetRepository<IPncRepository>();
 
         // Método genérico para obtener cualquier repositorio
         public TRepository GetRepository<TRepository>() where TRepository : class

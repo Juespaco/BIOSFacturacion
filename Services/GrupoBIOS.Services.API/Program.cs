@@ -130,6 +130,9 @@ builder.Services.AddScoped<ICompaniaApplication, CompaniaApplication>();
 builder.Services.AddScoped<IExcepcionRepository, ExcepcionRepository>();
 builder.Services.AddScoped<IExcepcionDomain, ExcepcionDomain>();
 builder.Services.AddScoped<IExcepcionApplication, ExcepcionApplication>();
+builder.Services.AddScoped<IPncRepository, PncRepository>();
+builder.Services.AddScoped<IPncDomain, PncDomain>();
+builder.Services.AddScoped<IPncApplication, PncApplication>();
 
 // Registrar UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

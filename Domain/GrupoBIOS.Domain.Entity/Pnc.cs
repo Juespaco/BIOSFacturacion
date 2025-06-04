@@ -8,7 +8,7 @@ namespace GrupoBIOS.Domain.Entity
 {
     public class Pnc
     {
-        public int IDPnc { get; set; }
+        public int? IDPnc { get; set; }
         public int CoPnc { get; set; }
         public string NombrePnc { get; set; } = null!;
         public string CodigoPnc { get; set; } = null!;
