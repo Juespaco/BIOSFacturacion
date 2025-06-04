@@ -1,0 +1,75 @@
+﻿<EditForm Model="_pncs" OnValidSubmit="GuardarCambios">
+    <MudPaper Class="p-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AgregarNuevo">Nuevo</MudButton>
+
+        <MudTable Items="_pncs" Bordered="true" Elevation="0">
+            <HeaderContent>
+                <MudTh>Código</MudTh>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Tarifa</MudTh>
+                <MudTh>Flete Ida</MudTh>
+                <MudTh>Flete Regreso</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="item">
+                <MudTd>
+                    <MudTextField @bind-Value="item.CodigoPnc" For="@(() => item.CodigoPnc)" MaxLength="8" Immediate="true" />
+                    <ValidationMessage For="@(() => item.CodigoPnc)" />
+                </MudTd>
+                <MudTd>
+                    <MudTextField @bind-Value="item.NombrePnc" For="@(() => item.NombrePnc)" MaxLength="200" Immediate="true" />
+                    <ValidationMessage For="@(() => item.NombrePnc)" />
+                </MudTd>
+                <MudTd>
+                    <MudNumericField @bind-Value="item.TarifaPnc" For="@(() => item.TarifaPnc)" />
+                    <ValidationMessage For="@(() => item.TarifaPnc)" />
+                </MudTd>
+                <MudTd>
+                    <MudNumericField T="double" @bind-Value="item.FleteidaPnc" For="@(() => item.FleteidaPnc)" />
+                    <ValidationMessage For="@(() => item.FleteidaPnc)" />
+                </MudTd>
+                <MudTd>
+                    <MudNumericField T="double" @bind-Value="item.FleteregPnc" For="@(() => item.FleteregPnc)" />
+                    <ValidationMessage For="@(() => item.FleteregPnc)" />
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+
+
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" Class="mt-4" ButtonType="ButtonType.Submit">
+            Actualizar
+        </MudButton>
+    </MudPaper>
+</EditForm>
+
+@code {
+
+   public List<PncDTO> _pncs = new()
+    {
+        new PncDTO
+        {
+            IDPnc = 1,
+            CoPnc = 101,
+            CodigoPnc = "0001",
+            NombrePnc = "PNC Demo",
+            TarifaPnc = 1000,
+            FleteidaPnc = 150.5,
+            FleteregPnc = 120.3
+        }
+    };
+
+    private void AgregarNuevo()
+    {
+        _pncs.Add(new PncDTO());
+    }
+
+    private void EliminarFila(PncDTO pnc)
+    {
+        _pncs.Remove(pnc);
+    }
+
+    private void GuardarCambios()
+    {
+        // Aquí iría la lógica de guardado o llamado a servicio
+        Console.WriteLine("Formulario válido. Guardar en base de datos...");
+    }
+}

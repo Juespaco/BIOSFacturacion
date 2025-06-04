@@ -1,0 +1,70 @@
+﻿<MudPaper Class="p-4">
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
+
+    <EditForm Model="_centrosOperativos">
+        <MudTable Items="_centrosOperativos" Bordered="true" Elevation="0">
+            <HeaderContent>
+                <MudTh>ID Siesa</MudTh>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Referencia Cobro</MudTh>
+                <MudTh>Prefijo Facturación</MudTh>
+                <MudTh>Motivo Facturación</MudTh>
+                <MudTh>Bodega Especiales</MudTh>
+                <MudTh>Correo</MudTh>
+                <MudTh>Fecha Corte</MudTh>
+                <MudTh>COBRO PNC</MudTh>
+                <MudTh>Estado</MudTh>
+                <MudTh>Acción</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="item">
+                <MudTd><MudNumericField @bind-Value="item.IDSiesaCO" Immediate="true" /></MudTd>
+                <MudTd><MudTextField @bind-Value="item.NombreCO" /></MudTd>
+                <MudTd><MudTextField @bind-Value="item.ReferenciadeCobro" /></MudTd>
+                <MudTd><MudTextField @bind-Value="item.PrefijodeFacturacion" /></MudTd>
+                <MudTd><MudTextField @bind-Value="item.MotivodeFacturacion" /></MudTd>
+                <MudTd><MudTextField @bind-Value="item.BodegaEspeciales" /></MudTd>
+                <MudTd><MudTextField @bind-Value="item.CorreoEnvioReporte" /></MudTd>
+                <MudTd><MudDatePicker @bind-Date="item.FechaInicialCorte" /></MudTd>
+                <MudTd><MudNumericField T="int?" @bind-Value="item.CobroPNC" /></MudTd>
+                <MudTd>
+                    <MudChip T="string" Color="@(item.Estado == true ? Color.Success : Color.Default)">
+                        @(item.Estado == true ? "Activo" : "Inactivo")
+                    </MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudButton Color="@(item.Estado == true ? Color.Error : Color.Success)" OnClick="@(() => CambiarEstado(item))">
+                        @(item.Estado == true ? "Inactivar" : "Activar")
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </EditForm>
+
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GuardarCambios" Class="mt-4">
+        Guardar Cambios
+    </MudButton>
+</MudPaper>
+
+@code {
+    private List<CentroOperativoDTO> _centrosOperativos = new();
+
+    private void AgregarNuevo()
+    {
+        _centrosOperativos.Add(new CentroOperativoDTO
+            {
+                FechadeCreacion = DateTime.Now,
+                CreadoPor = "usuario_actual" // reemplazar con usuario real
+            });
+    }
+
+    private void CambiarEstado(CentroOperativoDTO centro)
+    {
+        centro.Estado = !(centro.Estado ?? false);
+    }
+
+    private void GuardarCambios()
+    {
+        // Aquí iría tu lógica para guardar en backend
+        Console.WriteLine("Guardando...");
+    }
+}

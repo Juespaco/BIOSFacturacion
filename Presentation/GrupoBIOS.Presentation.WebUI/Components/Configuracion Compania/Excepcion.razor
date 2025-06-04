@@ -1,0 +1,64 @@
+﻿<MudPaper Class="p-4">
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
+
+    <EditForm Model="_excepciones">
+        <MudTable Items="_excepciones" Bordered="true" Elevation="0">
+            <HeaderContent>
+                <MudTh>ID Compañía</MudTh>
+                <MudTh>Planta</MudTh>
+                <MudTh>NIT</MudTh>
+                <MudTh>Nombre Cliente</MudTh>
+                <MudTh>Estado</MudTh>
+                <MudTh>Acción</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="item">
+                <MudTd><MudNumericField T="int" @bind-Value="item.IdCompania" Immediate="true" /></MudTd>
+                <MudTd><MudTextField T="string" @bind-Value="item.Planta" MaxLength="255" /></MudTd>
+                <MudTd><MudTextField T="string" @bind-Value="item.Nit" MaxLength="50" /></MudTd>
+                <MudTd><MudTextField T="string" @bind-Value="item.NombreCliente" MaxLength="255" /></MudTd>
+                <MudTd>
+                    <MudChip T="string" Color="@(item.Estado ? Color.Success : Color.Default)">
+                        @(item.Estado ? "Activo" : "Inactivo")
+                    </MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudButton Color="@(item.Estado ? Color.Error : Color.Success)" OnClick="@(() => CambiarEstado(item))">
+                        @(item.Estado ? "Inactivar" : "Activar")
+                    </MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </EditForm>
+
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GuardarCambios" Class="mt-4">
+        Guardar Cambios
+    </MudButton>
+</MudPaper>
+
+@code {
+    private List<ExcepcionDTO> _excepciones = new();
+
+    private void AgregarNuevo()
+    {
+        _excepciones.Add(new ExcepcionDTO
+            {
+                CreadoPor = "usuario_actual" // Reemplaza por el usuario real
+            });
+    }
+
+    private void CambiarEstado(ExcepcionDTO excepcion)
+    {
+        excepcion.Estado = !excepcion.Estado;
+    }
+
+    private void EliminarExcepcion(ExcepcionDTO excepcion)
+    {
+        _excepciones.Remove(excepcion);
+    }
+
+    private void GuardarCambios()
+    {
+        // Lógica para guardar en el backend
+        Console.WriteLine("Guardando excepciones...");
+    }
+}

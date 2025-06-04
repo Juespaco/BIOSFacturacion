@@ -1,0 +1,100 @@
+﻿<MudPaper Class="p-4">
+    <MudCardContent>
+        <MudForm Model="@Model">
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.IDCompania"
+                    Label="ID Compania *"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.IDCompania)"
+                    Immediate="true"
+                    ValidateOnBlur="true"
+                    Required="true"
+                    Disabled="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.IDSiesa"
+                    Label="ID Siesa *"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.IDSiesa)"
+                    Immediate="true"
+                    ValidateOnBlur="true"
+                    Required="true"
+                    InputType="InputType.Number"
+                    Disabled="true" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.NombreCompania"
+                    Label="Nombre Compañía *"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.NombreCompania)"
+                    Required="true"
+                    ValidateOnBlur="true"
+                    Immediate="false" />
+                </MudItem>
+
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.NombreBD"
+                    Label="Nombre Base de Datos *"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.NombreBD)"
+                    Immediate="true"
+                    ValidateOnBlur="true"
+                    Required="true" />
+                </MudItem>
+
+                <!-- Fila 3 - Nombre Conexión BD y URL Web Service -->
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.NombreConexionBD"
+                    Label="Nombre Conexión BD"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.NombreConexionBD)"
+                    Required="true"
+                    ValidateOnBlur="true"
+                    Immediate="false" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.UrlWebServiceSiesa"
+                    Label="URL Web Service Siesa"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.UrlWebServiceSiesa)"
+                    Required="true"
+                    ValidateOnBlur="true"
+                    Immediate="false" />
+                </MudItem>
+
+                <!-- Fila 4 - Usuario y Clave Web Service -->
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.UsuarioWebService"
+                    Label="Usuario Web Service"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.UsuarioWebService)"
+                    Required="true"
+                    ValidateOnBlur="true"
+                    Immediate="false" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="@Model.ClaveWebService"
+                    Label="Clave Web Service"
+                    Variant="Variant.Outlined"
+                    For="@(() => Model.ClaveWebService)"
+                    InputType="InputType.Password"
+                    Required="true"
+                    ValidateOnBlur="true"
+                    Immediate="false" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </MudCardContent>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public CompaniaDTO Model { get; set; } = new CompaniaDTO();
+
+    public CompaniaDTO GetCompanyData()
+    {
+        return Model;
+    }
+}

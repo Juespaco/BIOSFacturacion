@@ -19,11 +19,6 @@ namespace GrupoBIOS.Application.DTOs
         public string? BodegaEspeciales { get; set; }
         public string? CorreoEnvioReporte { get; set; }
         public DateTime? FechaInicialCorte { get; set; }
-        public DateTime? FechaPrimerCobro { get; set; }
-        public DateTime? FechaSegundoCobro { get; set; }
-        public DateTime? FechaCobroPNC { get; set; }
-        public int? DefinicioPrimerCobro { get; set; }
-        public int? DefinicioSegundoCobro { get; set; }
         public int? CobroPNC { get; set; }
         public bool? Estado { get; set; }
         public DateTime FechadeCreacion { get; set; }

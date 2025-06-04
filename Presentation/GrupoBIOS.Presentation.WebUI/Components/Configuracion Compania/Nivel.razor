@@ -1,0 +1,52 @@
+﻿<MudPaper Class="p-4">
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AgregarNuevo">Nuevo</MudButton>
+
+    <EditForm Model="_niveles">
+        <MudTable Items="_niveles" Bordered="true" Elevation="0">
+            <HeaderContent>
+                <MudTh>Centro Operativo</MudTh>
+                <MudTh>Nombre Nivel</MudTh>
+                <MudTh>Días Gracia</MudTh>
+                <MudTh>Días Cobertura</MudTh>
+                <MudTh>Posición</MudTh>
+                <MudTh>Primer Cobro</MudTh>
+                <MudTh>Segundo Cobro</MudTh>
+                <MudTh>PNC Cobro</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="item">
+                <MudTd><MudNumericField T="int" @bind-Value="item.NivelCentroOperativo" Immediate="true" /></MudTd>
+                <MudTd><MudTextField T="string" @bind-Value="item.NivelNombre" MaxLength="510" /></MudTd>
+                <MudTd><MudNumericField T="int" @bind-Value="item.NivelDiasGracia" /></MudTd>
+                <MudTd><MudNumericField T="int" @bind-Value="item.NivelDiasCobertura" /></MudTd>
+                <MudTd><MudNumericField T="double" @bind-Value="item.NivelPosicion" /></MudTd>
+                <MudTd><MudNumericField T="int" @bind-Value="item.NivelPrimerCobro" /></MudTd>
+                <MudTd><MudNumericField T="int" @bind-Value="item.NivelSegundoCobro" /></MudTd>
+                <MudTd><MudNumericField T="int" @bind-Value="item.NivelPNCCobro" /></MudTd>
+            </RowTemplate>
+        </MudTable>
+    </EditForm>
+
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GuardarCambios" Class="mt-4">
+        Guardar Cambios
+    </MudButton>
+</MudPaper>
+
+@code {
+    private List<NivelDTO> _niveles = new();
+
+    private void AgregarNuevo()
+    {
+        _niveles.Add(new NivelDTO());
+    }
+
+    private void EliminarNivel(NivelDTO nivel)
+    {
+        _niveles.Remove(nivel);
+    }
+
+    private void GuardarCambios()
+    {
+        // Aquí va tu lógica para guardar en el backend
+        Console.WriteLine("Guardando niveles...");
+    }
+}

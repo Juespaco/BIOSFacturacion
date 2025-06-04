@@ -1,6 +1,7 @@
 ﻿@page "/compania"
 
 @using System.ComponentModel.DataAnnotations
+@using GrupoBIOS.Presentation.WebUI.Components.Configuracion_Compania
 
 @inject ICompanyService compService
 @inject IDialogService DialogService
@@ -18,26 +19,25 @@
     <MudPaper Elevation="10" Class="pa-4 rounded-lg">
         <!-- Título y Botón de Agregar -->
         <div class="d-flex justify-space-between align-center mb-4">
-            <MudText Typo="Typo.h4" Color="Color.Primary">Gestión de Compañías</MudText>
+            <MudText Typo="Typo.h4" Color="Color.Primary">Configuración de Compañías</MudText>
         </div>
         <MudGrid>
             <MudItem xs="12" md="12">
-                <MudText Typo="Typo.h6" Class="mb-4">Información de Compañía</MudText>
                 <MudSelect T="int"
-                           Value="IDSiesa"
-                           Label="Seleccione la compañía"
-                           Variant="Variant.Outlined"
-                           Immediate="true"
-                           ValidateOnBlur="true"
-                           Required="true"
-                           Error="@(IDSiesa == 0)"
-                           ErrorText="Debe seleccionar la compañía"
-                           ValueChanged="@(async (value) => {
+                Value="IDSiesa"
+                Label="Seleccione la compañía"
+                Variant="Variant.Outlined"
+                Immediate="true"
+                ValidateOnBlur="true"
+                Required="true"
+                Error="@(IDSiesa == 0)"
+                ErrorText="Debe seleccionar la compañía"
+                ValueChanged="@(async (value) => {
                             IDSiesa = value;
                             await LoadComapnyByID(value);
                 })">
                     <MudSelectItem T="int"
-                                   Value="0">Seleccione una opción</MudSelectItem>
+                    Value="0">Seleccione una opción</MudSelectItem>
                     @foreach (var item in companias)
                     {
                         <MudSelectItem T="int" Value="@item.f_cia">@item.f_razon_social</MudSelectItem>
@@ -48,122 +48,41 @@
 
         @if (IDSiesa != 0)
         {
-            <MudCard Class="ma-4">
-                <MudCardHeader>
-                    <MudText Typo="Typo.h5" Class="ml-2">@(Model?.IDCompania == 0 ? "Nueva Compañía" : "Editar Compañía")</MudText>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudForm Model="@Model" @ref="@_form" @onsubmit="HandleSubmit">
-                        <MudGrid>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.IDCompania"
-                                              Label="ID Compania *"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.IDCompania)"
-                                              Immediate="true"
-                                              ValidateOnBlur="true"
-                                              Required="true"
-                                              Disabled="true" />
-                            </MudItem>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.IDSiesa"
-                                              Label="ID Siesa *"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.IDSiesa)"
-                                              Immediate="true"
-                                              ValidateOnBlur="true"
-                                              Required="true"
-                                              InputType="InputType.Number"
-                                              Disabled="true" />
-                            </MudItem>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.NombreCompania"
-                                              Label="Nombre Compañía *"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.NombreCompania)"
-                                              Required="true"
-                                              ValidateOnBlur="true"
-                                              Immediate="false" />
-                            </MudItem>
-
-
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.NombreBD"
-                                              Label="Nombre Base de Datos *"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.NombreBD)"
-                                              Immediate="true"
-                                              ValidateOnBlur="true"
-                                              Required="true" />
-                            </MudItem>
-
-                            <!-- Fila 3 - Nombre Conexión BD y URL Web Service -->
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.NombreConexionBD"
-                                              Label="Nombre Conexión BD"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.NombreConexionBD)"
-                                              Required="true"
-                                              ValidateOnBlur="true"
-                                              Immediate="false" />
-                            </MudItem>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.UrlWebServiceSiesa"
-                                              Label="URL Web Service Siesa"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.UrlWebServiceSiesa)"
-                                              Required="true"
-                                              ValidateOnBlur="true"
-                                              Immediate="false" />
-                            </MudItem>
-
-                            <!-- Fila 4 - Usuario y Clave Web Service -->
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.UsuarioWebService"
-                                              Label="Usuario Web Service"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.UsuarioWebService)"
-                                              Required="true"
-                                              ValidateOnBlur="true"
-                                              Immediate="false" />
-                            </MudItem>
-                            <MudItem xs="12" sm="6">
-                                <MudTextField @bind-Value="@Model.ClaveWebService"
-                                              Label="Clave Web Service"
-                                              Variant="Variant.Outlined"
-                                              For="@(() => Model.ClaveWebService)"
-                                              InputType="InputType.Password"
-                                              Required="true"
-                                              ValidateOnBlur="true"
-                                              Immediate="false" />
-                            </MudItem>
-
-                            <!-- Botones -->
-                            <!-- Botones -->
-                            <MudItem xs="12" class="d-flex justify-end mt-4">
-                                <MudButton Variant="Variant.Text"
-                                           Color="Color.Default"
-                                           Class="mr-2"
-                                           OnClick="ResetForm">
-                                    Cancelar
-                                </MudButton>
-                                <MudButton Variant="Variant.Filled"
-                                           Color="Color.Primary"
-                                           ButtonType="ButtonType.Submit"
-                                           Disabled="@(!IsFormValid())"
-                                           OnClick="HandleRegister">
-                                    @(Model?.IDCompania == 0 ? "Guardar" : "Actualizar")
-                                </MudButton>
-                            </MudItem>
-                        </MudGrid>
-                    </MudForm>
-                </MudCardContent>
-            </MudCard>
+            <MudGrid>
+                <MudItem xs="12" class="d-flex justify-start mt-4">
+                    <MudButton Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    ButtonType="ButtonType.Submit"
+                    OnClick="HandleRegister">
+                        Guardar
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+            <MudExpansionPanel Text="Companía" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <Compania @ref="companyForm" Model="Model" />
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <Nivel/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Centros Operativos" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <CentroOperativo/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="PNC" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <PNC/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Configuración E-mail" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <Notificacion/>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Excepciones" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                <Excepcion/>
+            </MudExpansionPanel>
         }
     </MudPaper>
 </MudContainer>
 
 @code {
+
+
 
     private bool _isFormValid;
     private bool _shouldValidate = false;
@@ -174,6 +93,7 @@
     private MudForm _form;
     //CompaniaDTO? Model = null;
     private CompaniaDTO Model { get; set; } = new CompaniaDTO();
+    private Compania companyForm;
     private bool isSaving = false;
     private bool _formIsValid = false;
 
@@ -186,7 +106,6 @@
     private List<string> _events = new();
 
     private IEnumerable<CompaniaSiesaResponseDTO> companias = new List<CompaniaSiesaResponseDTO>();
-    private RegisterCompaniaPage? _registerComponent;
     private int IDSiesa = 0;
 
     //IEnumerable<CompaniaDTO>? companias = [];
@@ -265,9 +184,7 @@
     // Método para verificar si el formulario es válido
     private bool IsFormValid()
     {
-        // Verifica si el formulario MudBlazor es válido
-        // if (_form != null && !_form.IsValid)
-        //     return false;
+
 
         // Verifica que todos los campos requeridos tengan valores
         return !string.IsNullOrWhiteSpace(Model.NombreCompania) &&
@@ -395,29 +312,6 @@
         _events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
     }
 
-    private async Task HandleSubmit()
-    {
-        await _form.Validate();
-
-        if (_form.IsValid && IsFormValid())
-        {
-            isSaving = true;
-            try
-            {
-                // Aquí iría la lógica para guardar
-                //await servicio.SaveCompaniaAsync(Model);
-                //Snackbar.Add("Compañía guardada con éxito", Severity.Success);
-                snackBarService.ShowSnackBar("El registro se ha guardado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
-                //Navigation.NavigateTo("/companias"); // Ajusta la ruta según tu aplicación
-            }
-            catch (Exception ex)
-            {
-                //Snackbar.Add($"Error al guardar: {ex.Message}", Severity.Error);
-                snackBarService.ShowSnackBar($"Ha ocurrido un error inesperado. {ex.Message}", Severity.Error, Defaults.Classes.Position.TopEnd);
-            }
-        }
-    }
-
     // Método para resetear el formulario
     private async Task ResetForm()
     {
@@ -441,7 +335,13 @@
     {
         showValidation = true;
         string response = string.Empty;
+        Model = companyForm.GetCompanyData();
 
+        if (!IsFormValid())
+        {
+            snackBarService.ShowSnackBar("Se deben llenar todos los campos requeridos.", Severity.Error, Defaults.Classes.Position.TopEnd);
+            return response;
+        }
         if (Model.IDCompania == 0)
         {
             response = await HandleInsert();
@@ -495,6 +395,9 @@
 
         showValidation = true;
 
+
+
+        
         Model.CreadoPor = NombreUsuario!;
         Model.Estado = true;
         Model.IDSiesa = IDSiesa;

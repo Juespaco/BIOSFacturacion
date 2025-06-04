@@ -1,0 +1,95 @@
+﻿<MudPaper Class="p-4">
+    <MudCardContent>
+        <MudForm Model="@Model">
+            <MudGrid>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="@Model.Puerto"
+                                  Label="Puerto *"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Model.Puerto)"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  InputType="InputType.Number" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudSwitch @bind-Checked="@Model.SSL"
+                               Color="Color.Success"
+                               ThumbIconChecked="@Icons.Material.Filled.Check"
+                               ThumbIconUnchecked="@Icons.Material.Filled.Close"
+                               Label="SSL *"
+                               Class="mt-2"
+                               Immediate="true"
+                               ValidateOnBlur="true"
+                               TrackCheckedColor="Color.Success"
+                               TrackUncheckedColor="Color.Error"
+                               For="@(() => Model.SSL)" />
+
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="@Model.Host"
+                                  Label="Host *"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Model.Host)"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true"
+                                  InputType="InputType.Text"/>
+                </MudItem>
+                <MudItem xs="12" sm="8">
+                    <MudTextField @bind-Value="@Model.EmailRemitente"
+                                  Label="Email Remitente *"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Model.EmailRemitente)"
+                                  Required="true"
+                                  ValidateOnBlur="true"
+                                  Immediate="false"
+                                  InputType="InputType.Email" />
+                </MudItem>
+
+
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="@Model.NombreRemitente"
+                                  Label="Nombre Remitente *"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Model.NombreRemitente)"
+                                  Immediate="true"
+                                  ValidateOnBlur="true"
+                                  Required="true" 
+                                  InputType="InputType.Text" />
+                </MudItem>
+
+                <MudItem xs="12" sm="8">
+                    <MudTextField @bind-Value="@Model.UsuarioEmail"
+                                  Label="Usuario Email*"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Model.UsuarioEmail)"
+                                  Required="true"
+                                  ValidateOnBlur="true"
+                                  Immediate="false" 
+                                  InputType="InputType.Email" />
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="@Model.ContrasenaEmail"
+                                  Label="Contraseña Email"
+                                  Variant="Variant.Outlined"
+                                  For="@(() => Model.ContrasenaEmail)"
+                                  InputType="InputType.Password"
+                                  Required="true"
+                                  ValidateOnBlur="true"
+                                  Immediate="false" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </MudCardContent>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public NotificacionDTO Model { get; set; } = new NotificacionDTO();
+
+    public NotificacionDTO GetNotificationData()
+    {
+        return Model;
+    }
+}
