@@ -7,6 +7,5 @@ CREATE TABLE Nivel (
     NivelDiasCobertura INT NOT NULL,
     NivelPosicion FLOAT NOT NULL DEFAULT(0),
     NivelPrimerCobro INT NOT NULL,
-    NivelSegundoCobro INT NOT NULL,
-    NivelPNCCobro INT NOT NULL
+    NivelSegundoCobro INT NOT NULL
 );

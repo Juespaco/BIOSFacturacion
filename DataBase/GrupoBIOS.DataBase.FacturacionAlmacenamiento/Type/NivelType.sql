@@ -6,6 +6,5 @@ CREATE TYPE NivelType AS TABLE (
     NivelDiasCobertura INT,
     NivelPosicion FLOAT,
     NivelPrimerCobro INT,
-    NivelSegundoCobro INT,
-    NivelPNCCobro INT
+    NivelSegundoCobro INT
 );

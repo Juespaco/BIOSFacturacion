@@ -33,9 +33,6 @@ namespace GrupoBIOS.Application.DTOs
 
         [Required(ErrorMessage = "El campo NivelSegundoCobro es requerido")]
         public int NivelSegundoCobro { get; set; }
-
-        [Required(ErrorMessage = "El campo NivelPNCCobro es requerido")]
-        public int NivelPNCCobro { get; set; }
     }
 
 }

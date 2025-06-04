@@ -14,16 +14,15 @@ BEGIN
             target.NivelDiasCobertura = source.NivelDiasCobertura,
             target.NivelPosicion = source.NivelPosicion,
             target.NivelPrimerCobro = source.NivelPrimerCobro,
-            target.NivelSegundoCobro = source.NivelSegundoCobro,
-            target.NivelPNCCobro = source.NivelPNCCobro
+            target.NivelSegundoCobro = source.NivelSegundoCobro
 
     WHEN NOT MATCHED BY TARGET THEN
         INSERT (
             NivelCentroOperativo, NivelNombre, NivelDiasGracia, NivelDiasCobertura,
-            NivelPosicion, NivelPrimerCobro, NivelSegundoCobro, NivelPNCCobro
+            NivelPosicion, NivelPrimerCobro, NivelSegundoCobro
         )
         VALUES (
             source.NivelCentroOperativo, source.NivelNombre, source.NivelDiasGracia, source.NivelDiasCobertura,
-            source.NivelPosicion, source.NivelPrimerCobro, source.NivelSegundoCobro, source.NivelPNCCobro
+            source.NivelPosicion, source.NivelPrimerCobro, source.NivelSegundoCobro
         );
 END

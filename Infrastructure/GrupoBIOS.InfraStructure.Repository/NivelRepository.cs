@@ -31,7 +31,6 @@ namespace GrupoBIOS.InfraStructure.Repository
             table.Columns.Add("NivelPosicion", typeof(double));
             table.Columns.Add("NivelPrimerCobro", typeof(int));
             table.Columns.Add("NivelSegundoCobro", typeof(int));
-            table.Columns.Add("NivelPNCCobro", typeof(int));
 
             foreach (var item in niveles)
             {
@@ -43,8 +42,7 @@ namespace GrupoBIOS.InfraStructure.Repository
                     item.NivelDiasCobertura,
                     item.NivelPosicion,
                     item.NivelPrimerCobro,
-                    item.NivelSegundoCobro,
-                    item.NivelPNCCobro
+                    item.NivelSegundoCobro
                 );
             }
 

@@ -16,7 +16,6 @@
                 <MudTh>Posición</MudTh>
                 <MudTh>Primer Cobro</MudTh>
                 <MudTh>Segundo Cobro</MudTh>
-                <MudTh>PNC Cobro</MudTh>
             </HeaderContent>
             <RowTemplate Context="item">
                 <MudTd>
@@ -34,7 +33,6 @@
                 <MudTd><MudNumericField T="double" @bind-Value="item.NivelPosicion" /></MudTd>
                 <MudTd><MudNumericField T="int" @bind-Value="item.NivelPrimerCobro" /></MudTd>
                 <MudTd><MudNumericField T="int" @bind-Value="item.NivelSegundoCobro" /></MudTd>
-                <MudTd><MudNumericField T="int" @bind-Value="item.NivelPNCCobro" /></MudTd>
             </RowTemplate>
         </MudTable>
     </EditForm>

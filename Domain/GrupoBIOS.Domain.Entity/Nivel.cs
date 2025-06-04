@@ -21,7 +21,6 @@ namespace GrupoBIOS.Domain.Entity
             public double NivelPosicion { get; set; }
             public int NivelPrimerCobro { get; set; }
             public int NivelSegundoCobro { get; set; }
-            public int NivelPNCCobro { get; set; }
         }
     }
 
