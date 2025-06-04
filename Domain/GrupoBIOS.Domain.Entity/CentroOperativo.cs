@@ -12,7 +12,7 @@ namespace GrupoBIOS.Domain.Entity
     {
         public int? IDCentroOperativo { get; set; }        
         public int? IDCompania { get; set; }
-        public int? IDSiesaCO { get; set; }
+        public string? IDSiesaCO { get; set; }
         public string? NombreCO { get; set; }
         public string? ReferenciadeCobro { get; set; }
         public string? PrefijodeFacturacion { get; set; }
