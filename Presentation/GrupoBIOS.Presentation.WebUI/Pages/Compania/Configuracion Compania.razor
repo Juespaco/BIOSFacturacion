@@ -75,7 +75,7 @@
                 </MudExpansionPanel>
             }
 
-            @if (Model.CentrosOperativos.Count > 0)
+            @if (Model.CentrosOperativos.Where(x => x.Estado == true).ToList().Count > 0)
             {
                 <MudExpansionPanel Text="Niveles" ExpandIcon="@Icons.Material.Filled.KeyboardArrowDown">
                     <Nivel Model="Model.Niveles" Centros="Model.CentrosOperativos.Where(x=>x.Estado == true).ToList()" OnGuardar="@RefrescarInformacion"/>
@@ -124,7 +124,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model.Compania.IDCompania = 0;        
+        Model.Compania.IDCompania = 0;
+
         NombreUsuario = await AuthService.GetUserNameAsync();
         LoadingService.Show();
         await GetCompanias();
@@ -146,7 +147,7 @@
                !string.IsNullOrWhiteSpace(Model.Compania.UrlWebServiceSiesa) &&
                !string.IsNullOrWhiteSpace(Model.Compania.UsuarioWebService) &&
                !string.IsNullOrWhiteSpace(Model.Compania.ClaveWebService)&&
-               
+
                //Verificar campos de notificaciones
                !string.IsNullOrWhiteSpace(Model.Notificacion.Puerto.ToString())&&
                !string.IsNullOrWhiteSpace(Model.Notificacion.Host)&&
@@ -160,19 +161,22 @@
     {
         try
         {
+
             var resp = await compService.GetConfiguracionCompaniaId(IDSiesa);
 
             if (resp?.Data != null)
             {
-                Model = resp.Data;                
+                Model = resp.Data;     
+                Model.Compania.IDSiesa = IDSiesa;
                 await Task.Delay(100); // Pequeño delay para asegurar renderizado
-                StateHasChanged();
+                await InvokeAsync(StateHasChanged);
             }
             else
             {
-                Model = new ConfiguracionCompaniaDTO();                
+                Model = new ConfiguracionCompaniaDTO();   
+                Model.Compania.IDSiesa = IDSiesa;
                 await Task.Delay(100); // Pequeño delay para asegurar renderizado
-                StateHasChanged();
+                await InvokeAsync(StateHasChanged);
             }
         }
         catch (Exception ex)
@@ -216,6 +220,7 @@
         response = await HandleUpdate();
         if (response == "OK")
         {
+            await RefrescarInformacion();
             CloseDialog();
             snackBarService.ShowSnackBar("El registro se ha actualizado exitosamente.", Severity.Success, Defaults.Classes.Position.TopEnd);
             showValidation = false;
