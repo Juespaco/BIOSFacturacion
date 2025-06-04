@@ -62,6 +62,7 @@
     <Folder Include="Index" />
     <Folder Include="Function" />
     <Folder Include="Job" />
+    <Folder Include="Type" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Table\Compania.sql" />
@@ -93,5 +94,18 @@
     <Build Include="StoredProcedure\sp_Compania_CambiarEstado.sql" />
     <Build Include="StoredProcedure\sp_Compania_ObtenerPorId.sql" />
     <Build Include="StoredProcedure\sp_Compania_ObtenerTodos.sql" />
+    <Build Include="Table\Excepciones.sql" />
+    <Build Include="StoredProcedure\sp_Excepciones_CrearActualizar.sql" />
+    <Build Include="StoredProcedure\sp_CentroOperativo_CrearActualizar.sql" />
+    <Build Include="StoredProcedure\sp_Nivel_CrearActualizar.sql" />
+    <Build Include="StoredProcedure\sp_Pnc_CrearActualizar.sql" />
+    <Build Include="StoredProcedure\uspDesactivarUsuario.sql" />
+    <Build Include="StoredProcedure\sp_Compania_ObtenerConfiguracionPorId.sql" />
+    <Build Include="Type\CentroOperativoType.sql" />
+    <Build Include="Type\ExcepcionType.sql" />
+    <Build Include="Type\NivelType.sql" />
+    <Build Include="Type\PncType.sql" />
+    <Build Include="Table\Nivel.sql" />
+    <Build Include="Table\Notificaciones.sql" />
   </ItemGroup>
 </Project>

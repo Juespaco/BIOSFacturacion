@@ -10,7 +10,6 @@ CREATE TYPE CentroOperativoType AS TABLE
     BodegaEspeciales NVARCHAR(500),
     CorreoEnvioReporte NVARCHAR(500),
     FechaInicialCorte DATETIME,
-    CobroPNC INT,
     Estado BIT,
     CreadoPor NVARCHAR(300)
 );

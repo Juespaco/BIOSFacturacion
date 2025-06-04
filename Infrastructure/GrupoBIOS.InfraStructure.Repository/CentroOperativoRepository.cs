@@ -116,7 +116,6 @@ namespace GrupoBIOS.InfraStructure.Repository
                     parameters.Add("@BodegaEspeciales", model.BodegaEspeciales);
                     parameters.Add("@CorreoEnvioReporte", model.CorreoEnvioReporte);
                     parameters.Add("@FechaInicialCorte", model.FechaInicialCorte);
-                    parameters.Add("@CobroPNC", model.CobroPNC);
                     //parameters.Add("@Estado", model.Estado);
                     parameters.Add("@CreadoPor", model.CreadoPor);
 
@@ -150,7 +149,6 @@ namespace GrupoBIOS.InfraStructure.Repository
                     parameters.Add("@BodegaEspeciales", model.BodegaEspeciales);
                     parameters.Add("@CorreoEnvioReporte", model.CorreoEnvioReporte);
                     parameters.Add("@FechaInicialCorte", model.FechaInicialCorte);
-                    parameters.Add("@CobroPNC", model.CobroPNC);
                     //parameters.Add("@Estado", model.Estado);
                     parameters.Add("@CreadoPor", model.CreadoPor);
 
@@ -180,7 +178,6 @@ namespace GrupoBIOS.InfraStructure.Repository
             table.Columns.Add("BodegaEspeciales", typeof(string));
             table.Columns.Add("CorreoEnvioReporte", typeof(string));
             table.Columns.Add("FechaInicialCorte", typeof(DateTime));
-            table.Columns.Add("CobroPNC", typeof(int));
             table.Columns.Add("Estado", typeof(bool));
             table.Columns.Add("CreadoPor", typeof(string));
 
@@ -197,7 +194,6 @@ namespace GrupoBIOS.InfraStructure.Repository
                     c.BodegaEspeciales,
                     c.CorreoEnvioReporte,
                     c.FechaInicialCorte,
-                    c.CobroPNC,
                     c.Estado,
                     c.CreadoPor
                 );

@@ -19,7 +19,6 @@ namespace GrupoBIOS.Application.DTOs
         public string? BodegaEspeciales { get; set; }
         public string? CorreoEnvioReporte { get; set; }
         public DateTime? FechaInicialCorte { get; set; }
-        public int? CobroPNC { get; set; }
         public bool? Estado { get; set; }
 
         [StringLength(150)]

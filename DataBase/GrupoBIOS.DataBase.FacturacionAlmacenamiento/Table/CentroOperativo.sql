@@ -9,7 +9,6 @@
     [BodegaEspeciales] NVARCHAR(500) NOT NULL,
     [CorreoEnvioReporte] NVARCHAR(500) NOT NULL,
     [FechaInicialCorte] DATETIME NOT NULL,
-    [CobroPNC] INT NOT NULL,
     [Estado] BIT NOT NULL,
     [FechadeCreacion] DATETIME NOT NULL DEFAULT GETDATE(),
     [CreadoPor] NVARCHAR(300) NOT NULL,

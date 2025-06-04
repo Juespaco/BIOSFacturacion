@@ -17,7 +17,6 @@
                 <MudTh>Bodega Especiales</MudTh>
                 <MudTh>Correo</MudTh>
                 <MudTh>Fecha Corte</MudTh>
-                <MudTh>COBRO PNC</MudTh>
                 <MudTh>Estado</MudTh>
                 <MudTh>Acción</MudTh>
             </HeaderContent>
@@ -30,7 +29,6 @@
                 <MudTd><MudTextField @bind-Value="item.BodegaEspeciales" /></MudTd>
                 <MudTd><MudTextField @bind-Value="item.CorreoEnvioReporte" /></MudTd>
                 <MudTd><MudDatePicker @bind-Date="item.FechaInicialCorte" /></MudTd>
-                <MudTd><MudNumericField T="int?" @bind-Value="item.CobroPNC" /></MudTd>
                 <MudTd>
                     <MudChip T="string" Color="@(item.Estado == true ? Color.Success : Color.Default)">
                         @(item.Estado == true ? "Activo" : "Inactivo")
