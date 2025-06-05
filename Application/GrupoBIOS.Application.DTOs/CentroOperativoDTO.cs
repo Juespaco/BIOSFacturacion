@@ -9,7 +9,7 @@ namespace GrupoBIOS.Application.DTOs
 {
     public class CentroOperativoDTO
     {
-        public int IDCentroOperativo { get; set; }
+        public int? IDCentroOperativo { get; set; }
         public int? IDCompania { get; set; }
         public string? IDSiesaCO { get; set; }
         public string? NombreCO { get; set; }
@@ -17,6 +17,8 @@ namespace GrupoBIOS.Application.DTOs
         public string? PrefijodeFacturacion { get; set; }
         public string? MotivodeFacturacion { get; set; }
         public string? BodegaEspeciales { get; set; }
+
+        [StringLength(10000, ErrorMessage = "Los correos no debe exceder los 10000 caracteres")]
         public string? CorreoEnvioReporte { get; set; }
         public DateTime? FechaInicialCorte { get; set; }
         public bool? Estado { get; set; }

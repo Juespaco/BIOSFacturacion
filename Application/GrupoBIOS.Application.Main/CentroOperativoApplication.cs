@@ -176,6 +176,37 @@ namespace GrupoBIOS.Application.Main
         {
             var response = new Response<string>();
 
+            try 
+            {
+                foreach (var centro in centroOperativoDto)
+                {
+                    if (!string.IsNullOrWhiteSpace(centro.CorreoEnvioReporte))
+                    {
+                        var correos = centro.CorreoEnvioReporte.Split(',')
+                            .Select(c => c.Trim())
+                            .Where(c => !string.IsNullOrWhiteSpace(c));
+
+                        foreach (var correo in correos)
+                        {
+                            if (!EsCorreoValido(correo))
+                            {
+                                response.IsSuccess = false;
+                                response.Data = string.Empty;
+                                response.Message = $"El correo '{correo}' no tiene un formato válido.";
+                                return response;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Data = string.Empty;
+                response.Message = ex.Message;
+                _logger.LogError(ex.Message);
+            }
+
             try
             {
                 var entities = _mapper.Map<IEnumerable<CentroOperativo>>(centroOperativoDto);
@@ -195,5 +226,19 @@ namespace GrupoBIOS.Application.Main
 
             return response;
         }
+
+        private bool EsCorreoValido(string correo)
+        {
+            try
+            {
+                var mail = new System.Net.Mail.MailAddress(correo);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }

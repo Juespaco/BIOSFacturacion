@@ -7,7 +7,7 @@
     [PrefijodeFacturacion] NVARCHAR(100) NOT NULL,
     [MotivodeFacturacion] NVARCHAR(1000) NOT NULL,
     [BodegaEspeciales] NVARCHAR(500) NOT NULL,
-    [CorreoEnvioReporte] NVARCHAR(500) NOT NULL,
+    [CorreoEnvioReporte] NVARCHAR(MAX) NOT NULL,
     [FechaInicialCorte] DATETIME NOT NULL,
     [Estado] BIT NOT NULL,
     [FechadeCreacion] DATETIME NOT NULL DEFAULT GETDATE(),
